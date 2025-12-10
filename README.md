@@ -160,17 +160,25 @@ otros...
 
 \[] El Guardaespaldas: Conoce quién es el Impostor, pero no sabe la palabra secreta. Su misión es evitar que voten al Impostor sin que lo descubran a él.
 
-
-
 \[] El Asesino (Sniper): Es un Impostor que tiene una habilidad especial: Si adivina quién tiene un rol específico (ej: quién es el "Médico" o el "Bufón") durante la partida, gana automáticamente.
-
-
 
 \[] El Periodista: En lugar de decir una palabra relacionada, este jugador tiene el deber de hacer una pregunta a otro jugador. (Ideal para forzar al impostor a hablar).
 
-
-
 \[] El Fanático: Un civil que elige a otro jugador al azar al inicio. Si ese jugador muere (es votado), el Fanático también pierde. Debe proteger a su "ídolo".
+
+\[] El Detective: Puede hacer una pregunta sí/no específica al moderador sobre un jugador (ej: "¿Su palabra contiene la letra A?")
+
+\[] El Líder - Su voto cuenta como 1.5 votos (redondeado hacia arriba)
+
+\[] El Anarquista - Puede anular un voto aleatorio en la votación
+
+\[] El Mediador - Puede proponer una tregua: si todos están de acuerdo, nadie es votado esa ronda
+
+\[] El Mudo - No puede hablar, solo escribir/gesticular
+
+\[] El Ciego - No ve quién está hablando
+
+\[] El Sordo - No oye las palabras, solo ve los labios
 
 ## 
 
@@ -193,6 +201,7 @@ otros...
 
 
 \[] Pista Visual: En lugar de texto, la app muestra una imagen borrosa o un icono. Todos ven la misma imagen, el impostor ve una imagen diferente o nada.
+
 
 
 
