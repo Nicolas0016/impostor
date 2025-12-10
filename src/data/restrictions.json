@@ -1,0 +1,46 @@
+{
+  "title": "Restricciones de Juego",
+  "subtitle": "Variantes que añaden desafíos adicionales a las partidas",
+  "restrictions": [
+    {
+      "id": "mimo",
+      "name": "Modo Mimo",
+      "description": "En esta ronda nadie habla. Solo se pueden hacer gestos.",
+      "details": "El impostor la tiene difícil aquí porque no puede inventar palabras.",
+      "icon": "mic-off",
+      "difficulty": "alta"
+    },
+    {
+      "id": "interrogatorio",
+      "name": "Modo Interrogatorio",
+      "description": "Nadie dice palabras al aire. Se designa un 'Detective' que le pregunta a cada uno.",
+      "details": "Rotativo. Cada ronda un jugador diferente es el detective.",
+      "icon": "search",
+      "difficulty": "media"
+    },
+    {
+      "id": "sin-repetir-letra",
+      "name": "Modo 'Sin Repetir Letra'",
+      "description": "No puedes usar una palabra que empiece con la misma letra que la anterior.",
+      "details": "Si el jugador anterior dijo una palabra que empieza con 'M', tú no puedes usar una que empiece con 'M'.",
+      "icon": "type",
+      "difficulty": "media"
+    },
+    {
+      "id": "una-silaba",
+      "name": "Modo 'Una Sílaba'",
+      "description": "Los jugadores solo pueden usar palabras de una sola sílaba.",
+      "details": "Ej: 'Sol', 'Mar', 'Luz'. Si alguien usa más sílabas, es sospechoso.",
+      "icon": "volume-x",
+      "difficulty": "alta"
+    },
+    {
+      "id": "pista-visual",
+      "name": "Pista Visual",
+      "description": "En lugar de texto, se muestra una imagen borrosa o un icono.",
+      "details": "Todos ven la misma imagen, el impostor ve una imagen diferente o nada.",
+      "icon": "image",
+      "difficulty": "baja"
+    }
+  ]
+}

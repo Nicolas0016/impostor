@@ -1,0 +1,66 @@
+{
+  "title": "Roles Disponibles",
+  "subtitle": "Cada rol tiene habilidades únicas que cambian completamente la estrategia",
+  "roles": [
+    {
+      "id": "persona-normal",
+      "name": "Persona Normal",
+      "team": "Ciudadanos",
+      "description": "Tu objetivo es descubrir al impostor. Tienes información completa y debes analizar cada respuesta.",
+      "ability": "Voto doble en rondas finales",
+      "icon": "user",
+      "color": "green",
+      "teamColor": "green"
+    },
+    {
+      "id": "impostor",
+      "name": "Impostor",
+      "team": "Impostores",
+      "description": "Tu objetivo es engañar a los demás sin ser descubierto. Conoces la palabra prohibida que otros intentan evitar.",
+      "ability": "Ver la palabra prohibida",
+      "icon": "skull",
+      "color": "red",
+      "teamColor": "red"
+    },
+    {
+      "id": "guardaespaldas",
+      "name": "Guardaespaldas",
+      "team": "Ciudadanos",
+      "description": "Conoce quién es el Impostor, pero no sabe la palabra secreta. Su misión es evitar que voten al Impostor sin que lo descubran a él.",
+      "ability": "Protección de jugador",
+      "icon": "shield",
+      "color": "blue",
+      "teamColor": "green"
+    },
+    {
+      "id": "periodista",
+      "name": "Periodista",
+      "team": "Ciudadanos",
+      "description": "En lugar de decir una palabra relacionada, este jugador tiene el deber de hacer una pregunta a otro jugador.",
+      "ability": "Pregunta adicional por ronda",
+      "icon": "file-text",
+      "color": "purple",
+      "teamColor": "green"
+    },
+    {
+      "id": "fanatico",
+      "name": "Fanático",
+      "team": "Ciudadanos",
+      "description": "Un civil que elige a otro jugador al azar al inicio. Si ese jugador muere (es votado), el Fanático también pierde.",
+      "ability": "Debe proteger a su 'ídolo'",
+      "icon": "heart",
+      "color": "pink",
+      "teamColor": "green"
+    },
+    {
+      "id": "asesino",
+      "name": "Asesino (Sniper)",
+      "team": "Impostores",
+      "description": "Es un Impostor que tiene una habilidad especial: Si adivina quién tiene un rol específico durante la partida, gana automáticamente.",
+      "ability": "Adivinar rol específico para ganar",
+      "icon": "target",
+      "color": "orange",
+      "teamColor": "red"
+    }
+  ]
+}

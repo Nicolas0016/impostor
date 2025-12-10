@@ -1,0 +1,146 @@
+---
+interface Props {
+  title: string;
+  tagline: string;
+  description?: string;
+}
+
+const { title, tagline, description } = Astro.props;
+---
+
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
+  <!-- Animated background -->
+  <div class="absolute inset-0">
+    <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse animation-delay-2000"></div>
+    <div class="absolute top-1/2 left-1/2 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse animation-delay-4000"></div>
+  </div>
+  
+  <div class="relative z-10 container mx-auto px-4 py-16 text-center">
+    <!-- Logo/Branding -->
+    <div class="mb-8 animate-fade-in">
+      <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 shadow-2xl mb-6 animate-pulse-glow">
+        <span class="text-4xl font-bold text-white">🤫</span>
+      </div>
+      
+      <h1 class="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+        {title}
+      </h1>
+      
+      <p class="text-2xl md:text-3xl text-white font-light mb-6 max-w-3xl mx-auto">
+        {tagline}
+      </p>
+      
+      {description && (
+        <p class="text-lg text-blue-200 mb-8 max-w-2xl mx-auto">
+          {description}
+        </p>
+      )}
+    </div>
+    
+    <!-- CTA Buttons -->
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center animate-slide-up">
+      <button class="btn bg-white text-purple-700 hover:bg-purple-50 px-8 py-4 text-lg font-bold shadow-xl transform hover:-translate-y-1 transition-all">
+        <span class="flex items-center justify-center gap-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Empezar a jugar
+        </span>
+      </button>
+      
+      <button class="btn bg-transparent border-2 border-white text-white hover:bg-white/10 px-8 py-4 text-lg font-bold">
+        <span class="flex items-center justify-center gap-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          Ver reglas
+        </span>
+      </button>
+    </div>
+   <!-- Stats -->
+   
+   <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
+    <!--   
+    <div class="text-center">
+        <div class="text-3xl font-bold text-white">100k+</div>
+        <div class="text-blue-200">Jugadores</div>
+      </div>
+      <div class="text-center">
+        <div class="text-3xl font-bold text-white">50+</div>
+        <div class="text-blue-200">Modalidades</div>
+      </div>
+      <div class="text-center">
+        <div class="text-3xl font-bold text-white">10+</div>
+        <div class="text-blue-200">Roles</div>
+      </div>
+      <div class="text-center">
+        <div class="text-3xl font-bold text-white">4.9★</div>
+        <div class="text-blue-200">Calificación</div>
+      </div>-->
+    </div>  
+    
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <a href="#game-info" class="text-white hover:text-blue-200 transition-colors">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+  
+  @keyframes pulseGlow {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 0 0 60px rgba(192, 132, 252, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 40px rgba(255, 255, 255, 0.5), 0 0 120px rgba(192, 132, 252, 0.5);
+    }
+  }
+  
+  .animate-pulse-glow {
+    animation: pulseGlow 2s infinite;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 1s ease-out;
+  }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.8s ease-out 0.3s both;
+  }
+</style>

@@ -1,0 +1,227 @@
+---
+type Difficulty = 'baja' | 'media' | 'alta';
+
+interface Restriction {
+  id: string;
+  name: string;
+  description: string;
+  details?: string;
+  icon: string;
+  difficulty: Difficulty;
+}
+
+interface Props {
+  restriction: Restriction;
+}
+
+const { restriction } = Astro.props;
+
+const difficultyConfig: Record<Difficulty, {
+  label: string;
+  color: string;
+  bgColor: string;
+  textColor: string;
+  borderColor: string;
+  iconColor: string;
+}> = {
+  baja: {
+    label: 'Fácil',
+    color: 'green',
+    bgColor: 'bg-green-50',
+    textColor: 'text-green-800',
+    borderColor: 'border-green-200',
+    iconColor: 'text-green-600'
+  },
+  media: {
+    label: 'Media',
+    color: 'yellow',
+    bgColor: 'bg-yellow-50',
+    textColor: 'text-yellow-800',
+    borderColor: 'border-yellow-200',
+    iconColor: 'text-yellow-600'
+  },
+  alta: {
+    label: 'Difícil',
+    color: 'red',
+    bgColor: 'bg-red-50',
+    textColor: 'text-red-800',
+    borderColor: 'border-red-200',
+    iconColor: 'text-red-600'
+  }
+};
+
+const config = difficultyConfig[restriction.difficulty];
+
+const getIcon = (iconName: string): string => {
+  const icons: Record<string, string> = {
+    'mic-off': 'M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z M5 19l14-14',
+    'search': 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',
+    'type': 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
+    'volume-x': 'M15.536 8.464a5 5 0 010 7.072M12 6l-3 4H4v4h5l3 4V6z M17 9l6 6m0-6l-6 6',
+    'image': 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z',
+    'lock': 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
+    'clock': 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
+    'eye': 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z',
+    'zap': 'M13 10V3L4 14h7v7l9-11h-7z',
+    'users': 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13 0a6 6 0 01-9-5.197'
+  };
+  
+  return icons[iconName] || icons.lock;
+};
+---
+
+<div 
+  class=`card border-2 ${config.borderColor} hover:border-${config.color}-300 transition-all duration-300 group py-1 px-1.5 rounded-2xl`
+  data-aos="fade-up"
+>
+  <div class="flex items-start justify-between mb-4">
+    <div class="flex items-center gap-3">
+      <div class="w-12 h-12 ${config.bgColor} rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
+        <svg 
+          class="w-6 h-6 ${config.iconColor}" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path 
+            stroke-linecap="round" 
+            stroke-linejoin="round" 
+            stroke-width="2" 
+            d={getIcon(restriction.icon)}
+          />
+        </svg>
+      </div>
+      
+      <div>
+        <h3 class="text-xl font-bold text-gray-800 group-hover:text-gray-900">
+          {restriction.name}
+        </h3>
+        <div class="flex items-center gap-2 mt-1">
+          <span class={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${config.bgColor} ${config.textColor}`}>
+            {config.label}
+          </span>
+          <div class="flex items-center">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div 
+                class={`w-2 h-2 rounded-full mx-0.5 ${i < (restriction.difficulty === 'baja' ? 1 : restriction.difficulty === 'media' ? 2 : 3) ? `bg-${config.color}-500` : 'bg-gray-300'}`}
+              ></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <p class="text-gray-600 mb-4 leading-relaxed">
+    {restriction.description}
+  </p>
+  
+  {restriction.details && (
+    <div class="mt-4 pt-4 border-t border-gray-100">
+      <div class="flex items-start">
+        <div class="flex-shrink-0 mt-1">
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-gray-500 italic">
+            {restriction.details}
+          </p>
+        </div>
+      </div>
+    </div>
+  )}
+  
+  <!-- Example of restriction in action -->
+  <div class="mt-6 pt-4 border-t border-gray-100">
+    <div class="flex items-center justify-between text-sm">
+      <span class="text-gray-500 font-medium">Ejemplo:</span>
+      <div class="flex items-center space-x-2">
+        {restriction.difficulty === 'baja' && (
+          <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded">Solo para principiantes</span>
+        )}
+        {restriction.difficulty === 'media' && (
+          <span class="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded">Para jugadores intermedios</span>
+        )}
+        {restriction.difficulty === 'alta' && (
+          <span class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded">Solo para expertos</span>
+        )}
+      </div>
+    </div>
+    
+    <div class="mt-3 bg-gray-50 rounded-lg p-3 text-sm">
+      {restriction.id === 'mimo' && (
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+            <span class="text-blue-600">🤐</span>
+          </div>
+          <span class="text-gray-600">Jugador 1: *hace gestos de comer*</span>
+        </div>
+      )}
+      
+      {restriction.id === 'interrogatorio' && (
+        <div class="space-y-2">
+          <div class="flex items-center space-x-2">
+            <div class="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
+              <span class="text-xs text-purple-600">D</span>
+            </div>
+            <span class="text-gray-600">Detective: "¿Tu palabra es un animal?"</span>
+          </div>
+        </div>
+      )}
+      
+      {restriction.id === 'sin-repetir-letra' && (
+        <div class="space-y-1">
+          <div class="flex items-center space-x-2">
+            <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+              <span class="text-xs text-green-600">A</span>
+            </div>
+            <span class="text-gray-600">Jugador 1: "Manzana"</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
+              <span class="text-xs text-red-600">B</span>
+            </div>
+            <span class="text-gray-600">Jugador 2: <span class="text-red-500">"Melocotón" ❌</span></span>
+          </div>
+        </div>
+      )}
+      
+      {restriction.id === 'una-silaba' && (
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+            <span class="text-yellow-600">👤</span>
+          </div>
+          <span class="text-gray-600">"Sol" ✅ - "Elefante" ❌</span>
+        </div>
+      )}
+      
+      {restriction.id === 'pista-visual' && (
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+            <span class="text-indigo-600">🖼️</span>
+          </div>
+          <span class="text-gray-600">Imagen borrosa mostrada a todos los jugadores</span>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
+
+<style>
+  [data-aos] {
+    opacity: 0;
+    transition-property: opacity, transform;
+    transition-duration: 0.6s;
+  }
+  
+  [data-aos="fade-up"] {
+    transform: translateY(30px);
+  }
+  
+  [data-aos].aos-animate {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>

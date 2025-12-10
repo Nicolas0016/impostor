@@ -1,0 +1,166 @@
+---
+interface Props {
+  mechanic: {
+    id: string;
+    name: string;
+    description: string;
+    details?: {
+      mecanica?: string;
+      objetivo?: string;
+      porQueFunciona?: string;
+      rol?: string;
+      efecto?: string;
+    };
+    icon: string;
+    color: string;
+    difficulty: 'baja' | 'media' | 'alta';
+  };
+}
+
+const { mechanic } = Astro.props;
+
+// Configuración centralizada de colores
+const colorConfig: Record<string, {
+  border: string;
+  bg: string;
+  text: string;
+  hoverBorder: string;
+}> = {
+  blue: {
+    border: 'border-blue-200',
+    bg: 'bg-blue-50',
+    text: 'text-blue-600',
+    hoverBorder: 'hover:border-blue-300'
+  },
+  red: {
+    border: 'border-red-200',
+    bg: 'bg-red-50',
+    text: 'text-red-600',
+    hoverBorder: 'hover:border-red-300'
+  },
+  green: {
+    border: 'border-green-200',
+    bg: 'bg-green-50',
+    text: 'text-green-600',
+    hoverBorder: 'hover:border-green-300'
+  },
+  yellow: {
+    border: 'border-yellow-200',
+    bg: 'bg-yellow-50',
+    text: 'text-yellow-600',
+    hoverBorder: 'hover:border-yellow-300'
+  },
+  purple: {
+    border: 'border-purple-200',
+    bg: 'bg-purple-50',
+    text: 'text-purple-600',
+    hoverBorder: 'hover:border-purple-300'
+  },
+  pink: {
+    border: 'border-pink-200',
+    bg: 'bg-pink-50',
+    text: 'text-pink-600',
+    hoverBorder: 'hover:border-pink-300'
+  },
+  indigo: {
+    border: 'border-indigo-200',
+    bg: 'bg-indigo-50',
+    text: 'text-indigo-600',
+    hoverBorder: 'hover:border-indigo-300'
+  },
+  gray: {
+    border: 'border-gray-200',
+    bg: 'bg-gray-50',
+    text: 'text-gray-600',
+    hoverBorder: 'hover:border-gray-300'
+  },
+  orange: {
+    border: 'border-orange-200',
+    bg: 'bg-orange-50',
+    text: 'text-orange-600',
+    hoverBorder: 'hover:border-orange-300'
+  }
+};
+
+const difficultyColors: Record<string, string> = {
+  baja: 'bg-green-100 text-green-800',
+  media: 'bg-yellow-100 text-yellow-800',
+  alta: 'bg-red-100 text-red-800'
+};
+
+// Obtener configuración de color con valores por defecto
+const getColorConfig = (color: string) => {
+  return colorConfig[color] || colorConfig.gray;
+};
+
+const getDifficultyColor = (difficulty: string): string => {
+  return difficultyColors[difficulty] || difficultyColors.media;
+};
+
+const capitalize = (str: string): string => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
+const color = getColorConfig(mechanic.color);
+---
+
+<div class={`card border-2 ${color.border} ${color.bg} ${color.hoverBorder} group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 py-1 px-1.5 rounded-2xl`}>
+  <div class="flex items-start justify-between mb-4">
+    <div class="flex items-center gap-3">
+      <!-- Icono con el color correspondiente -->
+      <div class={`w-12 h-12 rounded-lg flex items-center justify-center shadow-sm ${color.bg.replace('50', '100')}`}>
+        <span class={`text-2xl font-bold ${color.text}`}>
+          {mechanic.name.charAt(0)}
+        </span>
+      </div>
+      
+      <div>
+        <h3 class="text-xl font-bold text-gray-800 group-hover:text-gray-900">
+          {mechanic.name}
+        </h3>
+        <span class={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${getDifficultyColor(mechanic.difficulty)}`}>
+          {capitalize(mechanic.difficulty)}
+        </span>
+      </div>
+    </div>
+  </div>
+  
+  <p class="text-gray-600 mb-4">
+    {mechanic.description}
+  </p>
+  
+  {mechanic.details && (
+    <div class={`space-y-3 text-sm border-t pt-4 mt-4 ${color.border}`}>
+      {mechanic.details.mecanica && (
+        <div>
+          <span class="font-semibold text-gray-700">Mecánica:</span>
+          <p class="text-gray-600 mt-1">{mechanic.details.mecanica}</p>
+        </div>
+      )}
+      {mechanic.details.objetivo && (
+        <div>
+          <span class="font-semibold text-gray-700">Objetivo:</span>
+          <p class="text-gray-600 mt-1">{mechanic.details.objetivo}</p>
+        </div>
+      )}
+      {mechanic.details.rol && (
+        <div>
+          <span class="font-semibold text-gray-700">Rol:</span>
+          <p class="text-gray-600 mt-1">{mechanic.details.rol}</p>
+        </div>
+      )}
+      {mechanic.details.efecto && (
+        <div>
+          <span class="font-semibold text-gray-700">Efecto:</span>
+          <p class="text-gray-600 mt-1">{mechanic.details.efecto}</p>
+        </div>
+      )}
+      {mechanic.details.porQueFunciona && (
+        <div>
+          <span class="font-semibold text-gray-700">¿Por qué funciona?:</span>
+          <p class="text-gray-600 mt-1">{mechanic.details.porQueFunciona}</p>
+        </div>
+      )}
+    </div>
+  )}
+</div>

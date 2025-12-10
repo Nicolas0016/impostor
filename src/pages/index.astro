@@ -1,11 +1,87 @@
 ---
-import Welcome from '../components/Welcome.astro';
+import GameInfo from '../components/GameInfo.astro';
+import Hero from '../components/Hero.astro';
+import MechanicCard from '../components/MechanicCard.astro';
+import RestrictionCard from '../components/RestrictionCard.astro';
+import RoleCard from '../components/RoleCard.astro';
 import Layout from '../layouts/Layout.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Importar datos
+import gameData from '../data/gameData.json';
+import mechanicsData from '../data/mechanics.json';
+import restrictionsData from '../data/restrictions.json';
+import rolesData from '../data/roles.json';
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Impostor Game">
+  <!-- Hero Section -->
+  <Hero 
+    title={gameData.meta.title}
+    tagline={gameData.meta.tagline}
+    description={gameData.meta.description}
+  />
+  
+  <!-- Game Info Section -->
+  <GameInfo 
+    title="Sobre el Juego"
+    description={gameData.meta.description}
+    features={gameData.meta.features}
+  />
+  
+  <!-- Mechanics Section -->
+  <section id="mechanics" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="section-title">{mechanicsData.title}</h2>
+      <p class="section-subtitle">{mechanicsData.subtitle}</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {mechanicsData.mechanics.map(mechanic => (
+          <MechanicCard mechanic={mechanic} />
+        ))}
+      </div>
+    </div>
+  </section>
+  
+  <!-- Roles Section -->
+  <section id="roles" class="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+    <div class="container mx-auto px-4">
+      <h2 class="section-title">{rolesData.title}</h2>
+      <p class="section-subtitle">{rolesData.subtitle}</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {rolesData.roles.map(role => (
+          <RoleCard role={role} />
+        ))}
+      </div>
+    </div>
+  </section>
+  
+  <!-- Restrictions Section -->
+  <section id="restrictions" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="section-title">{restrictionsData.title}</h2>
+      <p class="section-subtitle">{restrictionsData.subtitle}</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        {restrictionsData.restrictions.map(restriction => (
+          <RestrictionCard restriction={restriction} />
+        ))}
+      </div>
+    </div>
+  </section>
+  
+  <!-- CTA Section -->
+  <section class="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+        ¿Listo para jugar?
+      </h2>
+      <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+        Únete a miles de jugadores y descubre al impostor entre vosotros
+      </p>
+      <button class="btn bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 text-lg font-bold shadow-xl">
+        ¡Jugar Gratis Ahora!
+      </button>
+    </div>
+  </section>
 </Layout>
