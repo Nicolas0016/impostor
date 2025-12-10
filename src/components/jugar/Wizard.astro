@@ -51,7 +51,7 @@ import StepSummary from "./StepSummary.astro";
     
     <!-- Paso 5: Resumen -->
     <div class="step-content" data-step="5" style="display: none;">
-      <StepSummary />
+      <StepSummary  />
     </div>
     
     <!-- Botones de navegación -->
@@ -190,12 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function startGame() {
     console.log('Configuración final:', gameConfig);
     
-    alert('¡Partida configurada!\n\nJugadores: ' + gameConfig.players + 
-          '\nImpostores máx: ' + gameConfig.maxImpostors +
-          '\nRoles: ' + (gameConfig.selectedRoles?.length || 0) +
-          '\nRestricción: ' + (gameConfig.selectedRestriction || 'Ninguna'));
-    
-    // window.location.href = '/partida';
+    window.location.href = '../gameStart';
   }
 
   // Cargar configuración guardada

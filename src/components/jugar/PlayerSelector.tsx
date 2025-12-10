@@ -1,19 +1,48 @@
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 
 export default function PlayerSelector() {
   const [playerCount, setPlayerCount] = useState(6);
   const [maxImpostors, setMaxImpostors] = useState(2);
 
+  // Cargar configuración al montar
+  useEffect(() => {
+    const savedConfig = localStorage.getItem('impostorGameConfig');
+    if (savedConfig) {
+      try {
+        const config = JSON.parse(savedConfig);
+        if (config.players) setPlayerCount(config.players);
+        if (config.maxImpostors) setMaxImpostors(config.maxImpostors);
+      } catch (error) {
+        console.error('Error al cargar configuración:', error);
+      }
+    }
+  }, []);
+
   const handleSliderChange = (e: Event) => {
-    const target = e.target as HTMLInputElement;
-    setPlayerCount(parseInt(target.value));
-    console.log(playerCount);
-    
+    const value = parseInt((e.target as HTMLInputElement).value);
+    setPlayerCount(value);
+    // Guardar inmediatamente
+    if (window.updateConfig) {
+      window.updateConfig('players', value);
+    }
   };
 
   const handleImpostorSelect = (value: number) => {
     setMaxImpostors(value);
+    // Guardar inmediatamente
+    if (window.updateConfig) {
+      window.updateConfig('maxImpostors', value);
+    }
   };
+
+  // También guardar cuando cambien los estados localmente
+  useEffect(() => {
+    const config = JSON.parse(localStorage.getItem('impostorGameConfig') || '{}');
+    config.players = playerCount;
+    config.maxImpostors = maxImpostors;
+    localStorage.setItem('impostorGameConfig', JSON.stringify(config));
+  }, [playerCount, maxImpostors]);
+  
 
   return (
     <div class="bg-white rounded-2xl p-8 shadow-xl">

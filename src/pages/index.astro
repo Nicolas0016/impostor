@@ -79,9 +79,73 @@ import rolesData from '../data/roles.json';
       <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
         Únete a miles de jugadores y descubre al impostor entre vosotros
       </p>
-      <button class="btn bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 text-lg font-bold shadow-xl">
+      <a 
+        href="/jugar" 
+        class="inline-block btn bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+      >
         ¡Jugar Gratis Ahora!
-      </button>
+      </a>
     </div>
   </section>
 </Layout>
+
+<!-- Script para manejar todos los botones de "Comenzar Partida" -->
+<script>
+  // Configurar todos los botones de "Comenzar Partida" para redirigir a /jugar
+  document.addEventListener('DOMContentLoaded', function() {
+    // Función para manejar el botón de comenzar partida
+    function handleStartGame() {
+      // Redirigir a la página de jugar
+      window.location.href = '/jugar';
+    }
+    
+    // Sobrescribir la función global startGame si existe
+    if (typeof window.startGame !== 'undefined') {
+      window.startGame = handleStartGame;
+    }
+    
+    // También crear una función global si no existe
+    window.startGame = handleStartGame;
+    
+    // Configurar botones específicos por clase o ID
+    const startButtons = document.querySelectorAll('[onclick*="startGame"], .start-game-btn, #startGameBtn');
+    
+    startButtons.forEach(button => {
+      button.addEventListener('click', handleStartGame);
+    });
+    
+    // Configurar botones que tengan texto específico
+    const textButtons = document.querySelectorAll('button');
+    textButtons.forEach(button => {
+      if (button.textContent.includes('Comenzar Partida') || 
+          button.textContent.includes('¡Comenzar Partida!') ||
+          button.textContent.includes('Jugar Gratis')) {
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          window.location.href = '/jugar';
+        });
+      }
+    });
+  });
+</script>
+
+<style>
+  /* Estilos adicionales para los botones */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 2rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+    text-decoration: none;
+  }
+  
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+</style>

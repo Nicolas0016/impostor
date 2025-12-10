@@ -1,0 +1,31 @@
+---
+import Layout from "../layouts/Layout.astro"
+---
+<Layout>
+<div class="flex flex-col gap-5 p-6 bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl border border-gray-700 shadow-xl max-w-md mx-auto">
+    <span class="text-xl font-semibold text-white bg-gradient-to-r from-purple-600 to-emerald-500 bg-clip-text text-transparent">
+        Jugador numero 1
+    </span>
+    
+    <input 
+        type="text" 
+        class="w-full px-4 py-3 bg-gray-800/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+        placeholder="Nombre del jugador"
+    />
+    
+    <div class="flex gap-3 mt-2">
+        <button 
+            disabled
+            class="flex-1 px-5 py-2.5 bg-gray-700 text-gray-400 rounded-lg font-medium cursor-not-allowed transition-colors"
+        >
+            anterior
+        </button>
+        
+        <button 
+            class="flex-1 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-xl hover:shadow-purple-900/20"
+        >
+            siguiente
+        </button>
+    </div>
+</div>
+</Layout>
