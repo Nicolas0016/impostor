@@ -1,0 +1,36 @@
+{
+  "restrictions": [
+    {
+      "id": "mimo",
+      "name": "Modo Mimo",
+      "description": "En esta ronda nadie habla. Solo se pueden hacer gestos.",
+      "difficulty": "alta",
+      "icon": "🤐",
+      "effect": "El impostor la tiene difícil aquí"
+    },
+    {
+      "id": "una-silaba",
+      "name": "Modo \"Una Sílaba\"",
+      "description": "Los jugadores solo pueden describir la palabra usando palabras de una sola sílaba.",
+      "difficulty": "media",
+      "icon": "🔤",
+      "effect": "Si alguien usa más sílabas, es sospechoso o penalizado"
+    },
+    {
+      "id": "interrogatorio",
+      "name": "Modo Interrogatorio",
+      "description": "Nadie dice palabras al aire. Se designa un \"Detective\" (rotativo) que le pregunta a cada uno.",
+      "difficulty": "media",
+      "icon": "🕵️",
+      "effect": "Preguntas dirigidas para descubrir al impostor"
+    },
+    {
+      "id": "pista-visual",
+      "name": "Pista Visual",
+      "description": "En lugar de texto, la app muestra una imagen borrosa o un icono.",
+      "difficulty": "baja",
+      "icon": "🖼️",
+      "effect": "Todos ven la misma imagen, el impostor ve una imagen diferente o nada"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+---
+import mechanicsData from '../../data/mechanics.json';
+import { ModeSelector } from './ModeSelector.tsx';
+
+// Filtrar solo las mecánicas principales
+const mainMechanics = mechanicsData.mechanics.slice(0, 9);
+---
+  <ModeSelector mechanics={mainMechanics} client:only />  

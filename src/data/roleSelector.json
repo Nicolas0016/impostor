@@ -1,0 +1,124 @@
+{
+  "roles": [
+    {
+      "id": "guardaespaldas",
+      "name": "El Guardaespaldas",
+      "description": "Conoce quién es el Impostor, pero no sabe la palabra secreta. Su misión es evitar que voten al Impostor sin que lo descubran a él.",
+      "type": "civil",
+      "difficulty": "media",
+      "icon": "🛡️"
+    },
+    {
+      "id": "asesino",
+      "name": "El Asesino (Sniper)",
+      "description": "Es un Impostor que tiene una habilidad especial: Si adivina quién tiene un rol específico durante la partida, gana automáticamente.",
+      "type": "impostor",
+      "difficulty": "alta",
+      "icon": "🎯"
+    },
+    {
+      "id": "periodista",
+      "name": "El Periodista",
+      "description": "En lugar de decir una palabra relacionada, este jugador tiene el deber de hacer una pregunta a otro jugador. Ideal para forzar al impostor a hablar.",
+      "type": "civil",
+      "difficulty": "media",
+      "icon": "📰"
+    },
+    {
+      "id": "fanatico",
+      "name": "El Fanático",
+      "description": "Elige a otro jugador al azar al inicio. Si ese jugador muere (es votado), el Fanático también pierde. Debe proteger a su 'ídolo'.",
+      "type": "civil",
+      "difficulty": "baja",
+      "icon": "🌟"
+    },
+    {
+      "id": "detective",
+      "name": "El Detective",
+      "description": "Puede hacer una pregunta sí/no específica al moderador sobre un jugador. Ej: '¿Su palabra contiene la letra A?'",
+      "type": "civil",
+      "difficulty": "alta",
+      "icon": "🕵️"
+    },
+    {
+      "id": "lider",
+      "name": "El Líder",
+      "description": "Su voto cuenta como 1.5 votos (redondeado hacia arriba). Tiene mayor influencia en las decisiones del grupo.",
+      "type": "civil",
+      "difficulty": "media",
+      "icon": "👑"
+    },
+    {
+      "id": "anarquista",
+      "name": "El Anarquista",
+      "description": "Puede anular un voto aleatorio en la votación. Introduce caos en el sistema de votación.",
+      "type": "neutral",
+      "difficulty": "media",
+      "icon": "⚫"
+    },
+    {
+      "id": "mediador",
+      "name": "El Mediador",
+      "description": "Puede proponer una tregua: si todos están de acuerdo, nadie es votado esa ronda.",
+      "type": "civil",
+      "difficulty": "baja",
+      "icon": "🤝"
+    },
+    {
+      "id": "mudo",
+      "name": "El Mudo",
+      "description": "No puede hablar, solo escribir/gesticular. Un desafío de comunicación único.",
+      "type": "especial",
+      "difficulty": "alta",
+      "icon": "🤐"
+    },
+    {
+      "id": "ciego",
+      "name": "El Ciego",
+      "description": "No ve quién está hablando. Debe confiar solo en su oído para identificar a los demás.",
+      "type": "especial",
+      "difficulty": "alta",
+      "icon": "👁️"
+    },
+    {
+      "id": "sordo",
+      "name": "El Sordo",
+      "description": "No oye las palabras, solo ve los labios. Debe leer los labios de los demás jugadores.",
+      "type": "especial",
+      "difficulty": "alta",
+      "icon": "👂"
+    },
+    {
+      "id": "bufon",
+      "name": "El Bufón",
+      "description": "Gana si logra ser votado. Si sobrevive hasta el final, pierde.",
+      "type": "neutral",
+      "difficulty": "media",
+      "icon": "🤡"
+    },
+    {
+      "id": "medico",
+      "name": "El Médico",
+      "description": "Puede curar a un jugador una vez por partida, evitando que sea eliminado si es votado.",
+      "type": "civil",
+      "difficulty": "media",
+      "icon": "⚕️"
+    },
+    {
+      "id": "dobleagente",
+      "name": "El Doble Agente",
+      "description": "Sabe quién es el Impostor pero trabaja para él. Gana si el Impostor gana.",
+      "type": "impostor",
+      "difficulty": "alta",
+      "icon": "🎭"
+    },
+    {
+      "id": "vigilante",
+      "name": "El Vigilante",
+      "description": "Puede vigilar a un jugador cada ronda. Si ese jugador es atacado, el ataque falla.",
+      "type": "civil",
+      "difficulty": "media",
+      "icon": "👁️‍🗨️"
+    }
+  ]
+}
