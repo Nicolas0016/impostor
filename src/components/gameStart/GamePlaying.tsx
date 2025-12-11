@@ -47,7 +47,6 @@ export default function GamePlaying({
             </button>
           ) : (
             <div className="space-y-6 animate-fadeIn">
-              {/* Información del Rol */}
               {playerInfo?.role === 'impostor' ? 
                 <div className="p-6 rounded-xl bg-red-900/40 border-2 border-red-500/50">
                   <div className="text-4xl font-bold text-red-400 font-mono tracking-wider">
@@ -55,7 +54,7 @@ export default function GamePlaying({
                   </div>
                 </div>
               : 
-                <div className="p-6 bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700">s
+                <div className="p-6 bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700">
                   <div className="text-4xl font-bold text-white font-mono tracking-wider">
                     {game.secretWord}
                   </div>
