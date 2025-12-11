@@ -43,30 +43,22 @@ export default function GamePlaying({
               onClick={onShowRole}
               className="w-full bg-white/20 hover:bg-white/30 backdrop-blur-sm border-2 border-white/30 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] text-lg"
             >
-              👁️ Ver mi Palabra
+              Descubir Palabra
             </button>
           ) : (
             <div className="space-y-6 animate-fadeIn">
               {/* Información del Rol */}
               {playerInfo?.role === 'impostor' ? 
                 <div className="p-6 rounded-xl bg-red-900/40 border-2 border-red-500/50">
-                  <h3 className="text-lg font-semibold text-gray-300 mb-3">Tu Palabra</h3>
                   <div className="text-4xl font-bold text-red-400 font-mono tracking-wider">
                     IMPOSTOR
                   </div>
-                  <p className="text-red-300 text-sm mt-2">
-                    Eres el impostor. ¡No dejes que te descubran!
-                  </p>
                 </div>
               : 
-                <div className="p-6 bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700">
-                  <h3 className="text-lg font-semibold text-gray-300 mb-3">Tu Palabra</h3>
+                <div className="p-6 bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700">s
                   <div className="text-4xl font-bold text-white font-mono tracking-wider">
                     {game.secretWord}
                   </div>
-                  <p className="text-gray-400 text-sm mt-2">
-                    Eres tripulante. ¡Encuentra al impostor!
-                  </p>
                 </div>
               }
               
@@ -75,7 +67,7 @@ export default function GamePlaying({
                 onClick={onPassTurn}
                 className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] text-lg shadow-lg"
               >
-                ▶️ Pasar Turno
+                Pasar Turno
               </button>
             </div>
           )}
