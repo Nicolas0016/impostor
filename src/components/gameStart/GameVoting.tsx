@@ -33,7 +33,7 @@ export default function GameVoting({
               >
                 <div className="flex items-center">
                   <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center mr-3 group-hover:bg-red-500">
-                    <img src="" alt="" />
+                    <span className="text-xl">👤</span>
                   </div>
                   <span className="text-lg font-semibold">{jugador}</span>
                 </div>
