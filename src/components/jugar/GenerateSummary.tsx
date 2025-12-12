@@ -15,6 +15,7 @@ interface GameConfig {
   difficulty?: string;
   selectedRestrictions?: string[];
   restrictionsEnabled?: boolean;
+  playerNames?: string[]; // Agregar esta propiedad
 }
 
 interface SummaryItem {
@@ -47,7 +48,7 @@ export default function GenerateSummary() {
           console.warn('No se encontró configuración en localStorage');
           // Configuración por defecto completa
           const defaultConfig: GameConfig = {
-            players: 9,
+            players: 6,
             maxImpostors: 2,
             selectedModes: ["guerra-civil", "bufon", "turista", "fuego-rapido"],
             selectedRoles: ["ciego", "mediador", "anarquista", "lider", "mudo"],
@@ -59,7 +60,8 @@ export default function GenerateSummary() {
             autoAssignRoles: false,
             maxRoles: 5,
             selectedRestrictions: [],
-            restrictionsEnabled: true
+            restrictionsEnabled: true,
+            playerNames: ["Ana", "Carlos", "Marta", "David", "Laura", "Pedro"] // Nombres por defecto
           };
           
           console.log('Usando configuración por defecto:', defaultConfig);
@@ -75,7 +77,7 @@ export default function GenerateSummary() {
         
         // Asegurarse de que todas las propiedades tengan valores por defecto
         const completeConfig: GameConfig = {
-          players: config.players || 9,
+          players: config.players || (config.playerNames ? config.playerNames.length : 6),
           maxImpostors: config.maxImpostors || 2,
           selectedModes: config.selectedModes || [],
           selectedRoles: config.selectedRoles || [],
@@ -87,7 +89,8 @@ export default function GenerateSummary() {
           maxRoles: config.maxRoles || 5,
           difficulty: config.difficulty || "media",
           selectedRestrictions: config.selectedRestrictions || [],
-          restrictionsEnabled: config.restrictionsEnabled !== undefined ? config.restrictionsEnabled : true
+          restrictionsEnabled: config.restrictionsEnabled !== undefined ? config.restrictionsEnabled : true,
+          playerNames: config.playerNames || generateDefaultNames(config.players || 6)
         };
         
         setGameConfig(completeConfig);
@@ -97,7 +100,7 @@ export default function GenerateSummary() {
         console.error('Error al cargar configuración:', error);
         // Configuración por defecto completa en caso de error
         const defaultConfig: GameConfig = {
-          players: 9,
+          players: 6,
           maxImpostors: 2,
           selectedModes: [],
           selectedRoles: [],
@@ -109,7 +112,8 @@ export default function GenerateSummary() {
           maxRoles: 5,
           difficulty: "media",
           selectedRestrictions: [],
-          restrictionsEnabled: true
+          restrictionsEnabled: true,
+          playerNames: ["Ana", "Carlos", "Marta", "David", "Laura", "Pedro"]
         };
         setGameConfig(defaultConfig);
         generateSummary(defaultConfig);
@@ -120,6 +124,35 @@ export default function GenerateSummary() {
     
     loadConfig();
   }, []);
+  
+  // Generar nombres por defecto según la cantidad de jugadores
+  const generateDefaultNames = (playerCount: number): string[] => {
+    const defaultNames = [
+      "Ana", "Carlos", "Marta", "David", "Laura", "Pedro", 
+      "Sofía", "Javier", "Elena", "Miguel", "Lucía", "Pablo",
+      "Clara", "Diego", "Raquel", "Álvaro"
+    ];
+    
+    return defaultNames.slice(0, playerCount);
+  };
+  
+  // Formatear la lista de jugadores
+  const formatPlayerList = (players: string[]): string => {
+    if (!players || players.length === 0) {
+      return "Sin jugadores";
+    }
+    
+    const validPlayers = players.filter(name => name && name.trim() !== '');
+    
+    if (validPlayers.length <= 5) {
+      // Mostrar todos los nombres
+      return validPlayers.join(', ');
+    } else {
+      // Mostrar primeros 5 y agregar "..."
+      const firstFive = validPlayers.slice(0, 5);
+      return `${firstFive.join(', ')}...`;
+    }
+  };
   
   const getModeName = (modeId: string) => {
     const modes: Record<string, string> = {
@@ -134,10 +167,13 @@ export default function GenerateSummary() {
   const generateSummary = (config: GameConfig) => {
     console.log('Generando resumen para:', config);
     
+    const playerCount = config.playerNames ? config.playerNames.length : config.players;
+    const playerList = config.playerNames ? formatPlayerList(config.playerNames) : `${playerCount} jugadores`;
+    
     const items: SummaryItem[] = [
       {
         label: 'Jugadores',
-        value: `${config.players} jugador${config.players > 1 ? 'es' : ''}`,
+        value: playerList,
         icon: '👥',
         color: 'blue'
       },
@@ -198,6 +234,10 @@ export default function GenerateSummary() {
     if (gameConfig) {
       console.log('Iniciando juego con configuración:', gameConfig);
       
+      const playerList = gameConfig.playerNames 
+        ? gameConfig.playerNames.filter(name => name && name.trim() !== '').join(', ')
+        : `${gameConfig.players} jugadores`;
+      
       const rolesText = gameConfig.selectedRoles && gameConfig.selectedRoles.length > 0 
         ? rolesData.roles
             .filter(role => gameConfig.selectedRoles.includes(role.id))
@@ -215,23 +255,6 @@ export default function GenerateSummary() {
           ? gameConfig.selectedRestrictions.map(getRestrictionName).join(', ')
           : 'Ninguna';
       
-      alert(`🎮 ¡Partida Configurada! 🎮
-
-👥 Jugadores: ${gameConfig.players}
-🎭 Impostores máximos: ${gameConfig.maxImpostors}
-📊 Dificultad: ${gameConfig.difficulty || 'media'}
-
-🎯 Modalidades activadas:
-${modesText}
-
-🃏 Roles Especiales:
-${rolesText}
-
-🔒 Restricción: ${restrictionText}
-
-⏱️ Tiempo por ronda: ${gameConfig.timePerRound} segundos
-
-¡Que comience el juego! 🕵️`);
     }
   };
   
@@ -287,51 +310,43 @@ ${rolesText}
   
   return (
     <div class="bg-white rounded-2xl p-8 shadow-xl">
-      <h2 class="text-2xl font-bold text-gray-900 mb-2">Resumen de la Partida</h2>
-      <p class="text-gray-600 mb-8">
-        Revisa toda la configuración antes de comenzar. ¡Todo está listo para jugar!
-      </p>
       
-      {/* Botón de debug para probar */}
-      <div class="mb-4">
-        <button 
-          onClick={() => {
-            console.log('Configuración actual:', gameConfig);
-            console.log('LocalStorage:', localStorage.getItem('impostorGameConfig'));
-            alert('Datos de consola mostrados. Revisa la consola del navegador.');
-          }}
-          class="text-sm px-3 py-1 bg-gray-100 text-gray-600 rounded-lg"
-        >
-          🔍 Ver datos en consola
-        </button>
-      </div>
-      
-      {/* Tarjeta principal de resumen */}
-      <div class="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-2xl p-6 mb-8">
-        <div class="flex items-center justify-between mb-4">
-          <div>
-            <h3 class="text-lg font-bold text-gray-800">Partida #{Math.floor(Math.random() * 1000)}</h3>
-            <p class="text-gray-600 text-sm">Configuración personalizada</p>
-          </div>
-        </div>
-        
-        {/* Grid de resumen */}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {summaryItems.map((item, index) => (
-            <div 
-              key={index}
-              class="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => handleEditStep(index + 1)}
-            >
-              <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center">
-                  <span class="text-xl mr-2">{item.icon}</span>
-                  <h4 class="font-semibold text-gray-800">{item.label}</h4>
+      {/* Sección de jugadores con nombres */}
+      <div class="mb-8">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Lista de Jugadores ({gameConfig.playerNames?.length || gameConfig.players})</h3>
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6">
+          <div class="flex flex-wrap gap-3">
+            {gameConfig.playerNames && gameConfig.playerNames
+              .filter(name => name && name.trim() !== '')
+              .slice(0, 5) // Mostrar solo los primeros 5
+              .map((name, index) => (
+                <div key={index} class="flex items-center bg-white border border-blue-200 rounded-xl px-4 py-3 shadow-sm">
+                  <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                    <span class="text-blue-600 font-medium">{index + 1}</span>
+                  </div>
+                  <span class="font-medium text-gray-800">{name}</span>
                 </div>
+              ))}
+            
+            {/* Mostrar "..." si hay más de 5 jugadores */}
+            {gameConfig.playerNames && gameConfig.playerNames.filter(name => name && name.trim() !== '').length > 5 && (
+              <div class="flex items-center bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm">
+                <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mr-3">
+                  <span class="text-gray-500 font-medium">+</span>
+                </div>
+                <span class="font-medium text-gray-600">
+                  y {gameConfig.playerNames.filter(name => name && name.trim() !== '').length - 5} más...
+                </span>
               </div>
-              <p class="text-gray-600 text-sm">{item.value}</p>
-            </div>
-          ))}
+            )}
+            
+            {/* Mensaje si no hay nombres */}
+            {(!gameConfig.playerNames || gameConfig.playerNames.length === 0) && (
+              <div class="text-center w-full py-4">
+                <p class="text-gray-500">No se han especificado nombres de jugadores</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       
@@ -366,54 +381,25 @@ ${rolesText}
                       {role.icon && <span class="text-lg mr-2">{role.icon}</span>}
                       <h4 class="font-medium text-gray-800">{role.name}</h4>
                     </div>
-                    <span class={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                      role.type === 'civil' ? 'bg-blue-100 text-blue-800' :
-                      role.type === 'impostor' ? 'bg-red-100 text-red-800' :
-                      'bg-yellow-100 text-yellow-800'
-                    }`}>
-                      {role.type === 'civil' ? 'Civil' : 
-                       role.type === 'impostor' ? 'Impostor' : 'Neutral'}
-                    </span>
                   </div>
-                  <p class="text-xs text-gray-600 mt-2">{role.description}</p>
                 </div>
               ))}
           </div>
         </div>
       )}
       
-      {/* Instrucciones finales */}
-      <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-6 mb-8">
-        <div class="flex items-start">
-          <div class="flex-shrink-0 w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
-            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold text-green-800 mb-2">¡Todo listo para jugar!</h3>
-            <ul class="text-green-700 text-sm space-y-2">
-              <li class="flex items-start">
-                <span class="font-bold mr-2">1.</span>
-                <span>El moderador recibirá las palabras secretas y las repartirá</span>
-              </li>
-              <li class="flex items-start">
-                <span class="font-bold mr-2">2.</span>
-                <span>Los jugadores con roles especiales recibirán instrucciones adicionales</span>
-              </li>
-              <li class="flex items-start">
-                <span class="font-bold mr-2">3.</span>
-                <span>Recuerda explicar las reglas especiales y restricciones a todos</span>
-              </li>
-              <li class="flex items-start">
-                <span class="font-bold mr-2">4.</span>
-                <span>¡Diviértete y buena suerte descubriendo al impostor!</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      
+      <style>
+        {`
+          .player-card {
+            transition: all 0.3s ease;
+          }
+          
+          .player-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+          }
+        `}
+      </style>
     </div>
   );
 }

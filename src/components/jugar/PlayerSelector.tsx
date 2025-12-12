@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'preact/hooks';
 
 export default function PlayerSelector() {
-  const [playerCount, setPlayerCount] = useState(6);
-  const [maxImpostors, setMaxImpostors] = useState(2);
+  const [playerNames, setPlayerNames] = useState<string[]>(['', '', '', '']);
+  const [maxImpostors, setMaxImpostors] = useState(1);
+  const [availableImpostorOptions, setAvailableImpostorOptions] = useState<number[]>([1]);
 
   // Cargar configuración al montar
   useEffect(() => {
@@ -10,151 +11,194 @@ export default function PlayerSelector() {
     if (savedConfig) {
       try {
         const config = JSON.parse(savedConfig);
-        if (config.players) setPlayerCount(config.players);
+        if (config.playerNames && Array.isArray(config.playerNames)) {
+          // Si hay menos de 4 nombres, completamos con campos vacíos
+          const loadedNames = [...config.playerNames];
+          while (loadedNames.length < 4) {
+            loadedNames.push('');
+          }
+          setPlayerNames(loadedNames);
+        }
         if (config.maxImpostors) setMaxImpostors(config.maxImpostors);
       } catch (error) {
         console.error('Error al cargar configuración:', error);
+        // Configuración por defecto
+        setPlayerNames(['', '', '', '']);
       }
     }
   }, []);
 
-  const handleSliderChange = (e: Event) => {
-    const value = parseInt((e.target as HTMLInputElement).value);
-    setPlayerCount(value);
-    // Guardar inmediatamente
+  // Actualizar opciones de impostores según cantidad de jugadores
+  useEffect(() => {
+    const validPlayers = playerNames.filter(name => name.trim() !== '').length;
+    
+    if (validPlayers <= 3) {
+      setAvailableImpostorOptions([1]);
+      // Si el máximo actual no está disponible, ajustarlo
+      if (maxImpostors !== 1) setMaxImpostors(1);
+    } else if (validPlayers >= 4 && validPlayers <= 5) {
+      setAvailableImpostorOptions([1, 2]);
+      // Ajustar si el máximo actual no está disponible
+      if (maxImpostors > 2) setMaxImpostors(2);
+    } else if (validPlayers >= 6 && validPlayers <= 8) {
+      setAvailableImpostorOptions([1, 2]);
+      // Ajustar si el máximo actual no está disponible
+      if (maxImpostors > 2) setMaxImpostors(2);
+    } else if (validPlayers >= 9 && validPlayers <= 15) {
+      setAvailableImpostorOptions([1, 2, 3]);
+      // No ajustamos porque 3 está disponible
+    }
+    
+    // Guardar configuración actualizada
+    saveConfig();
+  }, [playerNames]);
+
+  const saveConfig = () => {
+    const validPlayers = playerNames.filter(name => name.trim() !== '');
+    const config = JSON.parse(localStorage.getItem('impostorGameConfig') || '{}');
+    config.playerNames = validPlayers;
+    config.maxImpostors = maxImpostors;
+    config.playerCount = validPlayers.length;
+    localStorage.setItem('impostorGameConfig', JSON.stringify(config));
+    
+    // Notificar a window.updateConfig si existe
     if (window.updateConfig) {
-      window.updateConfig('players', value);
+      window.updateConfig('playerNames', validPlayers);
+      window.updateConfig('maxImpostors', maxImpostors);
+      window.updateConfig('playerCount', validPlayers.length);
+    }
+  };
+
+  const handleNameChange = (index: number, value: string) => {
+    const newNames = [...playerNames];
+    newNames[index] = value;
+    setPlayerNames(newNames);
+    
+    // Si estamos llenando el último campo, agregar uno nuevo (hasta 15)
+    if (index === playerNames.length - 1 && 
+        value.trim() !== '' && 
+        playerNames.length < 15) {
+      setPlayerNames([...newNames, '']);
+    }
+    
+    // Si eliminamos el penúltimo y el último está vacío, eliminar el último
+    if (index < playerNames.length - 1 && 
+        value.trim() === '' && 
+        playerNames.length > 4 &&
+        playerNames[playerNames.length - 1] === '') {
+      setPlayerNames(newNames.slice(0, -1));
     }
   };
 
   const handleImpostorSelect = (value: number) => {
     setMaxImpostors(value);
-    // Guardar inmediatamente
     if (window.updateConfig) {
       window.updateConfig('maxImpostors', value);
     }
   };
 
-  // También guardar cuando cambien los estados localmente
-  useEffect(() => {
-    const config = JSON.parse(localStorage.getItem('impostorGameConfig') || '{}');
-    config.players = playerCount;
-    config.maxImpostors = maxImpostors;
-    localStorage.setItem('impostorGameConfig', JSON.stringify(config));
-  }, [playerCount, maxImpostors]);
-  
+  const validPlayers = playerNames.filter(name => name.trim() !== '').length;
 
   return (
     <div class="bg-white rounded-2xl p-8 shadow-xl">
-      <h2 class="text-2xl font-bold text-gray-900 mb-2">¿Cuántos jugadores son?</h2>
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">¿Quiénes van a jugar?</h2>
       <p class="text-gray-600 mb-8">
-        Selecciona el número de jugadores para ajustar automáticamente los roles.
+        Escribe los nombres de los jugadores en orden. Se agregarán más campos automáticamente.
       </p>
 
-      {/* Selector de jugadores */}
+      {/* Lista de nombres de jugadores */}
       <div class="mb-10">
         <div class="flex items-center justify-between mb-4">
           <span class="text-lg font-medium text-gray-700">
-            Número de jugadores
+            Jugadores ({validPlayers} de 15)
           </span>
-          <span id="playerCount" class="text-3xl font-bold text-blue-600">
-            {playerCount}
+          <span class="text-sm text-gray-500">
+            Mínimo: 3, Recomendado: 6-8, Máximo: 15
           </span>
         </div>
 
-        <input
-          type="range"
-          id="playersSlider"
-          min="4"
-          max="15"
-          value={playerCount}
-          onChange={handleSliderChange}
-          class="w-full h-2 bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 rounded-full cursor-pointer 
-                 [&::-webkit-slider-thumb]:appearance-none 
-                 [&::-webkit-slider-thumb]:h-6 
-                 [&::-webkit-slider-thumb]:w-6 
-                 [&::-webkit-slider-thumb]:rounded-full 
-                 [&::-webkit-slider-thumb]:bg-gradient-to-r 
-                 [&::-webkit-slider-thumb]:from-blue-500 
-                 [&::-webkit-slider-thumb]:to-purple-600 
-                 [&::-webkit-slider-thumb]:shadow-lg 
-                 [&::-webkit-slider-thumb]:shadow-blue-200/50 
-                 [&::-webkit-slider-thumb]:border-2 
-                 [&::-webkit-slider-thumb]:border-white 
-                 [&::-webkit-slider-thumb]:transition-all 
-                 [&::-webkit-slider-thumb]:duration-200
-                 [&::-webkit-slider-thumb]:hover:scale-110
-                 [&::-webkit-slider-thumb]:hover:shadow-xl
-                 [&::-webkit-slider-thumb]:hover:shadow-blue-300/50
-                 
-                 [&::-moz-range-track]:bg-gradient-to-r 
-                 [&::-moz-range-track]:from-blue-400 
-                 [&::-moz-range-track]:via-purple-400 
-                 [&::-moz-range-track]:to-pink-400 
-                 [&::-moz-range-track]:h-2 
-                 [&::-moz-range-track]:rounded-full
-                 
-                 [&::-moz-range-thumb]:h-6 
-                 [&::-moz-range-thumb]:w-6 
-                 [&::-moz-range-thumb]:rounded-full 
-                 [&::-moz-range-thumb]:border-2 
-                 [&::-moz-range-thumb]:shadow-lg  
-                 [&::-moz-range-thumb]:cursor-pointer
-                 [&::-moz-range-thumb]:transition-all 
-                 [&::-moz-range-thumb]:duration-200
-                 
-                 hover:[&::-webkit-slider-thumb]:scale-110"
-        />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          {playerNames.map((name, index) => (
+            <div key={index} class="relative">
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => handleNameChange(index, (e.target as HTMLInputElement).value)}
+                placeholder={`Jugador ${index + 1}`}
+                class="w-full p-4 pl-10 border-2 border-gray-200 rounded-xl 
+                       focus:border-blue-300 focus:ring-2 focus:ring-blue-100 
+                       transition-all outline-none text-gray-700
+                       placeholder:text-gray-400"
+                maxLength={20}
+              />
+              <div class="absolute left-3 top-1/2 transform -translate-y-1/2 
+                        text-gray-400 font-medium">
+                {index + 1}
+              </div>
+            </div>
+          ))}
+        </div>
 
-        <div class="flex justify-between text-sm text-gray-500 mt-2">
-          <span>4 (mínimo)</span>
-          <span>8 (recomendado)</span>
-          <span>15 (máximo)</span>
+        <div class="text-sm text-gray-500 mb-2">
+          <p class="mb-1">• Escribe nombres para agregar más jugadores automáticamente</p>
+          <p>• Borra un nombre para eliminar jugadores (mínimo 3)</p>
         </div>
       </div>
 
-      {/* Selector de impostores */}
-      <div class="mb-10">
+      {/* Selector de impostores (dinámico según jugadores) */}
+      <div class="mb-6">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">
           Límite de impostores
         </h3>
         <p class="text-gray-600 mb-4 text-sm">
-          ¿Cuántos impostores máximo quieres que haya?
+          Según la cantidad de jugadores ({validPlayers}), puedes tener:
         </p>
 
         <div class="grid grid-cols-3 gap-4">
-          <button
-            onClick={() => handleImpostorSelect(1)}
-            class={`impostor-option py-4 rounded-xl border-2 transition-all text-center ${
-              maxImpostors === 1
-                ? 'border-blue-300 bg-blue-50'
-                : 'border-gray-200 hover:border-blue-300'
-            }`}
-          >
-            <div class="text-2xl font-bold text-gray-700 mb-1">1</div>
-          </button>
+          {availableImpostorOptions.includes(1) && (
+            <button
+              onClick={() => handleImpostorSelect(1)}
+              disabled={!availableImpostorOptions.includes(1)}
+              class={`impostor-option py-4 rounded-xl border-2 transition-all text-center ${
+                maxImpostors === 1 && validPlayers >= 3
+                  ? 'border-blue-300 bg-blue-50'
+                  : 'border-gray-200 hover:border-blue-300'
+              } ${!availableImpostorOptions.includes(1) ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              <div class="text-2xl font-bold text-gray-700 mb-1">1</div>
+              <div class="text-xs text-gray-500">3-5 jugadores</div>
+            </button>
+          )}
 
-          <button
-            onClick={() => handleImpostorSelect(2)}
-            class={`impostor-option py-4 rounded-xl border-2 transition-all text-center ${
-              maxImpostors === 2
-                ? 'border-blue-300 bg-blue-50'
-                : 'border-gray-200 hover:border-blue-300'
-            }`}
-          >
-            <div class="text-2xl font-bold text-gray-700 mb-1">2</div>
-          </button>
+          {availableImpostorOptions.includes(2) && (
+            <button
+              onClick={() => handleImpostorSelect(2)}
+              disabled={!availableImpostorOptions.includes(2)}
+              class={`impostor-option py-4 rounded-xl border-2 transition-all text-center ${
+                maxImpostors === 2
+                  ? 'border-blue-300 bg-blue-50'
+                  : 'border-gray-200 hover:border-blue-300'
+              } ${!availableImpostorOptions.includes(2) ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              <div class="text-2xl font-bold text-gray-700 mb-1">2</div>
+              <div class="text-xs text-gray-500">6-8 jugadores</div>
+            </button>
+          )}
 
-          <button
-            onClick={() => handleImpostorSelect(3)}
-            class={`impostor-option py-4 rounded-xl border-2 transition-all text-center ${
-              maxImpostors === 3
-                ? 'border-blue-300 bg-blue-50'
-                : 'border-gray-200 hover:border-blue-300'
-            }`}
-          >
-            <div class="text-2xl font-bold text-gray-700 mb-1">3</div>
-          </button>
+          {availableImpostorOptions.includes(3) && (
+            <button
+              onClick={() => handleImpostorSelect(3)}
+              disabled={!availableImpostorOptions.includes(3)}
+              class={`impostor-option py-4 rounded-xl border-2 transition-all text-center ${
+                maxImpostors === 3
+                  ? 'border-blue-300 bg-blue-50'
+                  : 'border-gray-200 hover:border-blue-300'
+              } ${!availableImpostorOptions.includes(3) ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              <div class="text-2xl font-bold text-gray-700 mb-1">3</div>
+              <div class="text-xs text-gray-500">9+ jugadores</div>
+            </button>
+          )}
         </div>
       </div>
 
@@ -164,17 +208,23 @@ export default function PlayerSelector() {
             transition: all 0.3s ease;
           }
           
-          .impostor-option:hover {
+          .impostor-option:hover:not([disabled]) {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
           }
           
-          input[type="range"]::-webkit-slider-thumb {
-            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
-            border: 2px solid white;
+          input[type="text"]:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
           }
         `}
       </style>
     </div>
   );
+}
+
+// Extender la interfaz Window para TypeScript
+declare global {
+  interface Window {
+    updateConfig?: (key: string, value: any) => void;
+  }
 }

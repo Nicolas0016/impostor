@@ -4,13 +4,14 @@ import StepPlayers from "./StepPlayers.astro";
 import StepRestrictions from "./StepRestrictions.astro";
 import StepRoles from "./StepRoles.astro";
 import StepSummary from "./StepSummary.astro";
+import  SetCategories from './SetCategories.tsx';
 ---
 
 <div id="wizard-container">
   <!-- Indicador de pasos -->
   <div class="mb-12">
     <div class="flex justify-between items-center max-w-4xl mx-auto">
-      {['Jugadores', 'Modalidades', 'Roles', 'Restricciones', 'Resumen'].map((step, index) => (
+      {['Jugadores', 'Categorías', 'Modalidades', 'Roles', 'Restricciones', 'Resumen'].map((step, index) => (
         <div key={step} class="flex flex-col items-center" style={`flex: 1;`}>
           <div 
             class="step-indicator w-12 h-12 rounded-full border-2 p-2 border-gray-300 flex items-center justify-center font-bold text-gray-500 mb-2 transition-all duration-300"
@@ -34,24 +35,29 @@ import StepSummary from "./StepSummary.astro";
       <StepPlayers />
     </div>
     
-    <!-- Paso 2: Modalidades -->
+    <!-- Paso 2: Categorías -->
     <div class="step-content" data-step="2" style="display: none;">
+      <SetCategories client:only />
+    </div>
+    
+    <!-- Paso 3: Modalidades -->
+    <div class="step-content" data-step="3" style="display: none;">
       <StepModes />
     </div>
     
-    <!-- Paso 3: Roles -->
-    <div class="step-content" data-step="3" style="display: none;">
+    <!-- Paso 4: Roles -->
+    <div class="step-content" data-step="4" style="display: none;">
       <StepRoles />
     </div>
     
-    <!-- Paso 4: Restricciones -->
-    <div class="step-content" data-step="4" style="display: none;">
+    <!-- Paso 5: Restricciones -->
+    <div class="step-content" data-step="5" style="display: none;">
       <StepRestrictions />
     </div>
     
-    <!-- Paso 5: Resumen -->
-    <div class="step-content" data-step="5" style="display: none;">
-      <StepSummary  />
+    <!-- Paso 6: Resumen -->
+    <div class="step-content" data-step="6" style="display: none;">
+      <StepSummary />
     </div>
     
     <!-- Botones de navegación -->
@@ -91,13 +97,15 @@ document.addEventListener('DOMContentLoaded', function() {
     selectedModes: [],
     selectedRoles: [],
     selectedRestriction: null,
+    selectedCategories: [], // Nueva propiedad
+    allCategories: [], // Para almacenar todas las categorías
     difficulty: 'media',
     showTutorial: true,
     timePerRound: 60
   };
   
   let currentStep = 1;
-  const totalSteps = 5; // Cambiado a 5 pasos
+  const totalSteps = 6; // Cambiado a 6 pasos
 
   // Función para actualizar el paso
   function updateStep(step) {
@@ -176,7 +184,10 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
           updatedNextBtn.innerHTML = 'Siguiente <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>';
           updatedNextBtn.addEventListener('click', function() {
-            updateStep(currentStep + 1);
+            // Validar paso actual antes de avanzar
+            if (validateCurrentStep()) {
+              updateStep(currentStep + 1);
+            }
           });
         }
       }
@@ -186,9 +197,42 @@ document.addEventListener('DOMContentLoaded', function() {
     localStorage.setItem('impostorGameConfig', JSON.stringify(gameConfig));
   }
 
+  // Función para validar el paso actual
+  function validateCurrentStep() {
+    switch(currentStep) {
+      case 1: // Jugadores
+        const playerNames = gameConfig.playerNames || [];
+        const validPlayers = playerNames.filter(name => name && name.trim() !== '');
+        if (validPlayers.length < 3) {
+          alert('Se necesitan al menos 3 jugadores para comenzar');
+          return false;
+        }
+        break;
+        
+      case 2: // Categorías
+        const selectedCategories = gameConfig.selectedCategories || [];
+        if (selectedCategories.length === 0) {
+          if (!confirm('No has seleccionado ninguna categoría. ¿Quieres continuar sin categorías?\n\nLas palabras se generarán aleatoriamente.')) {
+            return false;
+          }
+        }
+        break;
+        
+      // Puedes agregar más validaciones para otros pasos aquí
+    }
+    return true;
+  }
+
   // Función para empezar la partida
   function startGame() {
     console.log('Configuración final:', gameConfig);
+    
+    // Validar que haya categorías seleccionadas o mostrar advertencia
+    if (!gameConfig.selectedCategories || gameConfig.selectedCategories.length === 0) {
+      if (!confirm('No has seleccionado categorías. Las palabras se generarán aleatoriamente.\n\n¿Deseas continuar?')) {
+        return;
+      }
+    }
     
     window.location.href = '../gameStart';
   }
@@ -222,7 +266,9 @@ document.addEventListener('DOMContentLoaded', function() {
       if (currentStep === totalSteps) {
         startGame();
       } else {
-        updateStep(currentStep + 1);
+        if (validateCurrentStep()) {
+          updateStep(currentStep + 1);
+        }
       }
     });
   }

@@ -1,0 +1,40 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CategoryCreator from '../components/createCategory/CategoryCreator';
+---
+<Layout>
+    <div class="container mx-auto">
+        <!-- Header con botón de volver -->
+        <div class="bg-gradient-to-r from-blue-50 to-purple-50 border-b border-gray-200 rounded-t-2xl">
+            <div class="p-6">
+                <!-- Botón de volver como enlace <a> -->
+                <a 
+                    href="/jugar"
+                    class="inline-flex items-center px-5 py-3 bg-white text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all duration-300 border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow mb-4 group"
+                >
+                    <svg class="w-5 h-5 mr-3 text-blue-600 group-hover:text-blue-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    <span class="font-medium group-hover:translate-x-1 transition-transform">
+                        Volver a Configuración
+                    </span>
+                </a>
+                
+                <h2 class="text-2xl font-bold text-gray-900">Crear Nueva Categoría</h2>
+                <p class="text-gray-600 mt-2">Agrega palabras sueltas Y pares relacionados en una sola categoría</p>
+            </div>
+        </div>
+
+        <!-- Contenedor principal -->
+        <div class="max-w-4xl mx-auto">
+            <CategoryCreator client:load />
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t border-gray-200 text-center">
+            <p class="text-gray-500 text-sm">
+                Las categorías se guardan en tu navegador y estarán disponibles para futuras partidas.
+            </p>
+        </footer>
+    </div>
+</Layout>
