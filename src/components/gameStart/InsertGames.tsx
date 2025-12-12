@@ -7,6 +7,17 @@ import GamePlaying from './GamePlaying';
 import GameVoting from './GameVoting';
 import type { PlayerInfo } from './types';
 
+interface Category {
+  id: string;
+  name: string;
+  type: 'single' | 'mixed';
+  words: string[];
+  pairs?: Array<{word: string, related: string}>;
+  createdAt: string;
+  lastUsed: string;
+  count: number;
+}
+
 interface GameConfigData {
   players: number;
   maxImpostors: number;
@@ -22,6 +33,7 @@ interface GameConfigData {
   selectedRestrictions?: string[];
   restrictionsEnabled?: boolean;
   playerNames?: string[];
+  selectedCategories?: string[]; // IDs de categorías seleccionadas
 }
 
 export default function InsertGames() {
@@ -40,6 +52,14 @@ export default function InsertGames() {
   const [eliminatedPlayers, setEliminatedPlayers] = useState<string[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [playerToEliminate, setPlayerToEliminate] = useState<string | null>(null);
+  const [roundInfo, setRoundInfo] = useState<{
+    category?: string;
+    palabraTripulante: string;
+    palabraImpostor: string;
+  }>({
+    palabraTripulante: '',
+    palabraImpostor: ''
+  });
   
   // Cargar configuración desde localStorage
   useEffect(() => {
@@ -93,12 +113,39 @@ export default function InsertGames() {
           return;
         }
 
+        // Cargar todas las categorías disponibles
+        const savedCategories = localStorage.getItem('impostorCategories');
+        let allCategories: Category[] = [];
+        
+        if (savedCategories) {
+          try {
+            allCategories = JSON.parse(savedCategories);
+            console.log(`Todas las categorías cargadas: ${allCategories.length}`);
+          } catch (error) {
+            console.error('Error al cargar categorías:', error);
+          }
+        }
+
+        // Filtrar categorías seleccionadas
+        let categoriesToUse: Category[] = [];
+        if (config.selectedCategories && config.selectedCategories.length > 0) {
+          categoriesToUse = allCategories.filter(category => 
+            config.selectedCategories?.includes(category.id)
+          );
+          console.log(`Categorías seleccionadas: ${categoriesToUse.length} de ${allCategories.length}`);
+          console.log('IDs seleccionados:', config.selectedCategories);
+          console.log('Categorías encontradas:', categoriesToUse.map(c => ({id: c.id, name: c.name})));
+        } else {
+          console.log('No hay categorías seleccionadas, se usarán palabras aleatorias');
+        }
+
         // Crear el juego con la configuración cargada
         const newGame = new ImpostorGame(
           validPlayers,
           impostorCount,
           config.selectedModes || [],
-          config.selectedRestrictions || (config.selectedRestriction ? [config.selectedRestriction] : [])
+          config.selectedRestrictions || (config.selectedRestriction ? [config.selectedRestriction] : []),
+          categoriesToUse
         );
         
         setGame(newGame);
@@ -108,13 +155,23 @@ export default function InsertGames() {
           players: validPlayers,
           maxImpostors: impostorCount,
           availableModes: config.selectedModes || [],
-          restrictions: config.selectedRestrictions || (config.selectedRestriction ? [config.selectedRestriction] : [])
+          restrictions: config.selectedRestrictions || (config.selectedRestriction ? [config.selectedRestriction] : []),
+          categories: categoriesToUse
         });
         
         setMessage('¡Juego configurado desde los datos guardados!');
         setGameState('ready');
         setEliminatedPlayers([]);
         setConfigError(null);
+        
+        // Mostrar debug info
+        const estado = newGame.obtenerEstadoCompleto();
+        console.log('Estado del juego:', {
+          jugadores: estado.players.length,
+          categoriasCargadas: estado.categories.length,
+          palabrasDisponibles: estado.totalWordsAvailable,
+          categorias: estado.categories.map(c => c.name)
+        });
         
       } catch (error) {
         console.error('Error al cargar configuración:', error);
@@ -127,43 +184,44 @@ export default function InsertGames() {
     loadGameConfig();
   }, []);
   
-  function iniciarJuegoConConfiguracion(playerNames: string[], maxImpostors: number, modes: string[], restrictions: string[]): void {
-    const newGame = new ImpostorGame(
-      playerNames,
-      maxImpostors,
-      modes,
-      restrictions
-    );
-    
-    setGame(newGame);
-    newGame.iniciarJuego({
-      players: playerNames,
-      maxImpostors: maxImpostors,
-      availableModes: modes,
-      restrictions: restrictions
-    });
-    
-    setMessage('¡Juego configurado!');
-    setGameState('ready');
-    setEliminatedPlayers([]);
-  }
-  
   function comenzarRonda(): void {
     if (!game) return;
     
-    const palabras = ['manzana', 'computadora', 'playa', 'montaña', 'libro', 'música'];
-    const palabraAleatoria = palabras[Math.floor(Math.random() * palabras.length)];
-    
-    const resultado = game.iniciarNuevaRonda(palabraAleatoria);
+    const resultado = game.iniciarNuevaRonda();
     setRound(game.round);
     setMessage(resultado.message);
     setGameState('playing');
     setShowRole(false);
     
+    // Guardar información de la ronda
+    setRoundInfo({
+      category: resultado.category,
+      palabraTripulante: resultado.palabraTripulante,
+      palabraImpostor: resultado.palabraImpostor
+    });
+    
     const info = game.obtenerInfoJugadorActual();
     setCurrentPlayer(info.player);
     setPlayerInfo(info);
     setEliminatedPlayers([]);
+    
+    console.log(`Ronda ${game.round} iniciada`);
+    console.log(`Categoría: ${resultado.category || 'Aleatoria'}`);
+    console.log(`Palabra tripulantes: ${resultado.palabraTripulante}`);
+    console.log(`Palabra impostor: ${resultado.palabraImpostor}`);
+    
+    // Debug: mostrar estado del juego
+    const estado = game.obtenerEstadoCompleto();
+    console.log('Debug estado juego:', {
+      round: estado.round,
+      categories: estado.categories.map(c => ({
+        name: c.name,
+        type: c.type,
+        words: c.words.length,
+        pairs: c.pairs?.length || 0
+      })),
+      totalWords: estado.totalWordsAvailable
+    });
   }
   
   function pasarTurno(): void {
@@ -228,19 +286,25 @@ export default function InsertGames() {
   function iniciarNuevaRonda(): void {
     if (!game) return;
     
-    const palabras = ['manzana', 'computadora', 'playa', 'montaña', 'libro', 'música'];
-    const palabraAleatoria = palabras[Math.floor(Math.random() * palabras.length)];
-    
-    const resultado = game.iniciarNuevaRonda(palabraAleatoria);
+    const resultado = game.iniciarNuevaRonda();
     setRound(game.round);
     setMessage(resultado.message);
     setGameState('playing');
     setShowRole(false);
     
+    // Actualizar información de la ronda
+    setRoundInfo({
+      category: resultado.category,
+      palabraTripulante: resultado.palabraTripulante,
+      palabraImpostor: resultado.palabraImpostor
+    });
+    
     const info = game.obtenerInfoJugadorActual();
     setCurrentPlayer(info.player);
     setPlayerInfo(info);
     setEliminatedPlayers([]);
+    
+    console.log(`Nueva ronda ${game.round}: ${resultado.category || 'Aleatoria'}`);
   }
   
   function reiniciarJuegoCompleto(): void {
@@ -256,6 +320,10 @@ export default function InsertGames() {
     setEliminatedPlayers([]);
     setShowConfirmModal(false);
     setPlayerToEliminate(null);
+    setRoundInfo({
+      palabraTripulante: '',
+      palabraImpostor: ''
+    });
     
     // Recargar configuración desde localStorage
     const savedConfig = localStorage.getItem('impostorGameConfig');
@@ -265,12 +333,41 @@ export default function InsertGames() {
         const validPlayers = config.playerNames?.filter(name => name && name.trim() !== '') || [];
         
         if (validPlayers.length >= 3) {
-          iniciarJuegoConConfiguracion(
+          // Cargar todas las categorías disponibles
+          const savedCategories = localStorage.getItem('impostorCategories');
+          let allCategories: Category[] = [];
+          
+          if (savedCategories) {
+            allCategories = JSON.parse(savedCategories);
+          }
+          
+          // Filtrar categorías seleccionadas
+          let categoriesToUse: Category[] = [];
+          if (config.selectedCategories && config.selectedCategories.length > 0) {
+            categoriesToUse = allCategories.filter(category => 
+              config.selectedCategories?.includes(category.id)
+            );
+          }
+          
+          const newGame = new ImpostorGame(
             validPlayers,
             config.maxImpostors || 1,
             config.selectedModes || [],
-            config.selectedRestrictions || (config.selectedRestriction ? [config.selectedRestriction] : [])
+            config.selectedRestrictions || (config.selectedRestriction ? [config.selectedRestriction] : []),
+            categoriesToUse
           );
+          
+          setGame(newGame);
+          newGame.iniciarJuego({
+            players: validPlayers,
+            maxImpostors: config.maxImpostors || 1,
+            availableModes: config.selectedModes || [],
+            restrictions: config.selectedRestrictions || (config.selectedRestriction ? [config.selectedRestriction] : []),
+            categories: categoriesToUse
+          });
+          
+          setMessage('¡Juego reiniciado con configuración guardada!');
+          setGameState('ready');
         }
       } catch (error) {
         console.error('Error al recargar configuración:', error);
@@ -312,14 +409,15 @@ export default function InsertGames() {
             <p className="text-red-300 mb-6">{configError}</p>
             <div className="space-y-4">
               <button
-                onClick={() => window.location.href = '/jugar'}
+                onClick={() => window.location.href = '/configurar'}
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300"
               >
-                🎮 Ir a jugar Juego
+                🎮 Ir a Configurar Juego
               </button>
               <button
                 onClick={() => {
                   localStorage.removeItem('impostorGameConfig');
+                  localStorage.removeItem('impostorCategories');
                   window.location.reload();
                 }}
                 className="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300"
@@ -347,7 +445,7 @@ export default function InsertGames() {
             <h3 className="text-xl font-bold text-white mb-2">Esperando configuración</h3>
             <p className="text-yellow-300 mb-6">No hay juego configurado aún</p>
             <button
-              onClick={() => window.location.href = '/jugar'}
+              onClick={() => window.location.href = '/configurar'}
               className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300"
             >
               🎮 Ir a Configurar Juego

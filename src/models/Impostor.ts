@@ -1,3 +1,14 @@
+interface Category {
+  id: string;
+  name: string;
+  type: 'single' | 'mixed';
+  words: string[];
+  pairs?: Array<{word: string, related: string}>;
+  createdAt: string;
+  lastUsed: string;
+  count: number;
+}
+
 export default class ImpostorGame {
     // Configuración inicial
     private originalPlayers: string[]; // Jugadores totales al inicio
@@ -6,32 +17,43 @@ export default class ImpostorGame {
     availableModes: string[];
     restrictions: string[];
     
+    // Categorías para las palabras
+    private selectedCategories: Category[] = [];
+    
     // Estado del juego
     round: number;
     currentPlayerIndex: number;
     turnOrder: number[];
     secretWord: string;
+    impostorWord: string; // Nueva: palabra para impostor
     rolesForRound: Map<string, string>; // jugador -> rol
     impostorsForRound: string[];
     isRoundActive: boolean;
+    
+    // Estadísticas de palabras
+    private usedWords: Set<string> = new Set();
+    private currentCategory?: Category;
     
     constructor(
         players: string[] = [],
         maxImpostors: number = 1,
         availableModes: string[] = [],
-        restrictions: string[] = []
+        restrictions: string[] = [],
+        categories: Category[] = []
     ) {
         this.originalPlayers = [...players];
         this.players = [...players];
         this.maxImpostors = maxImpostors;
         this.availableModes = availableModes;
         this.restrictions = restrictions;
+        this.selectedCategories = categories;
         
         // Estado inicial
         this.round = 0;
         this.currentPlayerIndex = 0;
         this.turnOrder = [];
         this.secretWord = '';
+        this.impostorWord = '';
         this.rolesForRound = new Map();
         this.impostorsForRound = [];
         this.isRoundActive = false;
@@ -42,37 +64,196 @@ export default class ImpostorGame {
         players: string[],
         maxImpostors: number,
         availableModes: string[],
-        restrictions: string[]
+        restrictions: string[],
+        categories?: Category[]
     }) {
         this.originalPlayers = [...config.players];
         this.players = [...config.players];
         this.maxImpostors = config.maxImpostors;
         this.availableModes = config.availableModes;
         this.restrictions = config.restrictions;
+        this.selectedCategories = config.categories || [];
         this.round = 0;
+        this.usedWords.clear();
         
         console.log(`Juego configurado con ${this.players.length} jugadores`);
         console.log(`Máximo de impostores: ${this.maxImpostors}`);
-        console.log(`Modos disponibles: ${this.availableModes.join(', ')}`);
-        console.log(`Restricciones: ${this.restrictions.join(', ')}`);
+        console.log(`Categorías cargadas: ${this.selectedCategories.length}`);
+        console.log(`Palabras totales disponibles: ${this.getTotalWordsCount()}`);
+        console.log(this.selectedCategories);
+    }
+    
+    // Obtiene el total de palabras disponibles en todas las categorías
+    private getTotalWordsCount(): number {
+        let total = 0;
+        this.selectedCategories.forEach(category => {
+            total += category.words.length;
+            if (category.pairs) {
+                total += category.pairs.length * 2;
+            }
+        });
+        return total;
+    }
+    
+    // Selecciona una palabra aleatoria del pool disponible
+    private seleccionarPalabraAleatoria(): string {
+        // Si no hay categorías, usar lista por defecto
+        if (this.selectedCategories.length === 0) {
+            const defaultWords = ['manzana', 'computadora', 'playa', 'montaña', 'libro', 'música'];
+            return defaultWords[Math.floor(Math.random() * defaultWords.length)];
+        }
+        
+        // Seleccionar una categoría aleatoria
+        const randomCategory = this.selectedCategories[
+            Math.floor(Math.random() * this.selectedCategories.length)
+        ];
+        
+        // Incrementar contador de uso de la categoría
+        randomCategory.count = (randomCategory.count || 0) + 1;
+        randomCategory.lastUsed = new Date().toISOString();
+        this.currentCategory = randomCategory;
+        
+        console.log(`Categoría seleccionada: ${randomCategory.name} (${randomCategory.type})`);
+        
+        // Seleccionar palabra según el tipo de categoría
+        if (randomCategory.type === 'single') {
+            // Para categorías de palabras sueltas
+            const availableWords = randomCategory.words.filter(
+                word => !this.usedWords.has(word)
+            );
+            
+            if (availableWords.length === 0) {
+                // Si todas las palabras fueron usadas, resetear
+                this.usedWords.clear();
+                return randomCategory.words[Math.floor(Math.random() * randomCategory.words.length)];
+            }
+            
+            const selectedWord = availableWords[Math.floor(Math.random() * availableWords.length)];
+            this.usedWords.add(selectedWord);
+            return selectedWord;
+            
+        } else {
+            // Para categorías mixtas
+            // Decidir aleatoriamente si usar palabra suelta o par
+            const useSingleWord = Math.random() < 0.5 || randomCategory.pairs?.length === 0;
+            
+            if (useSingleWord && randomCategory.words.length > 0) {
+                const availableWords = randomCategory.words.filter(
+                    word => !this.usedWords.has(word)
+                );
+                
+                if (availableWords.length === 0) {
+                    this.usedWords.clear();
+                    return randomCategory.words[Math.floor(Math.random() * randomCategory.words.length)];
+                }
+                
+                const selectedWord = availableWords[Math.floor(Math.random() * availableWords.length)];
+                this.usedWords.add(selectedWord);
+                return selectedWord;
+                
+            } else if (randomCategory.pairs && randomCategory.pairs.length > 0) {
+                // Seleccionar un par aleatorio
+                const randomPair = randomCategory.pairs[
+                    Math.floor(Math.random() * randomCategory.pairs.length)
+                ];
+                
+                // Marcar ambas palabras como usadas
+                this.usedWords.add(randomPair.word);
+                this.usedWords.add(randomPair.related);
+                
+                return randomPair.word; // Los tripulantes ven esta palabra
+            }
+        }
+        
+        // Fallback
+        return 'palabra';
+    }
+    
+    // Encuentra una palabra relacionada para el impostor
+    private encontrarPalabraRelacionada(palabraTripulante: string): string {
+        if (!this.currentCategory) {
+            return 'IMPOSTOR';
+        }
+        
+        // Buscar si la palabra está en algún par de la categoría actual
+        if (this.currentCategory.pairs) {
+            const pair = this.currentCategory.pairs.find(p => p.word === palabraTripulante);
+            if (pair) {
+                return pair.related; // Devolver la palabra relacionada del par
+            }
+            
+            // Buscar inverso (por si la palabra es la "relacionada")
+            const reversePair = this.currentCategory.pairs.find(p => p.related === palabraTripulante);
+            if (reversePair) {
+                return reversePair.word;
+            }
+        }
+        
+        // Si no hay par directo, buscar palabras relacionadas por categoría
+        if (this.currentCategory.type === 'single') {
+            // Para categorías de palabras sueltas, usar otra palabra de la misma categoría
+            const otrasPalabras = this.currentCategory.words.filter(
+                word => word !== palabraTripulante && !this.usedWords.has(word)
+            );
+            
+            if (otrasPalabras.length > 0) {
+                return otrasPalabras[Math.floor(Math.random() * otrasPalabras.length)];
+            }
+            
+            // Si no hay otras palabras disponibles, usar la primera diferente
+            const palabraDiferente = this.currentCategory.words.find(word => word !== palabraTripulante);
+            if (palabraDiferente) {
+                return palabraDiferente;
+            }
+        }
+        
+        // Fallback: buscar en todas las categorías
+        for (const category of this.selectedCategories) {
+            if (category === this.currentCategory) continue;
+            
+            // Buscar palabra similar (misma longitud o que empiece con misma letra)
+            const palabraSimilar = category.words.find(word => 
+                word.length === palabraTripulante.length || 
+                word[0] === palabraTripulante[0]
+            );
+            
+            if (palabraSimilar) {
+                return palabraSimilar;
+            }
+        }
+        
+        return 'IMPOSTOR';
     }
     
     // Inicia una nueva ronda
-    iniciarNuevaRonda(palabraSecreta: string): {
+    iniciarNuevaRonda(): {
         round: number,
         impostorsCount: number,
         message: string,
-        turnOrder: string[]
+        turnOrder: string[],
+        category?: string,
+        palabraTripulante: string,
+        palabraImpostor: string
     } {
         // RESET: Al comenzar nueva ronda, restaurar todos los jugadores originales
         this.players = [...this.originalPlayers];
         
         this.round++;
-        this.secretWord = palabraSecreta;
         this.isRoundActive = true;
         
         // Determinar cuántos impostores para esta ronda
         const impostorsCount = this.calcularImpostoresParaRonda();
+        
+        // Seleccionar palabra para tripulantes
+        const palabraTripulante = this.seleccionarPalabraAleatoria();
+        this.secretWord = palabraTripulante;
+        
+        // Determinar palabra para impostor (50% de chance de palabra relacionada)
+        let palabraImpostor = 'IMPOSTOR';
+        if (Math.random() < 0.5 && this.selectedCategories.length > 0) {
+            palabraImpostor = this.encontrarPalabraRelacionada(palabraTripulante);
+        }
+        this.impostorWord = palabraImpostor;
         
         // Generar roles para todos los jugadores
         this.generarRolesParaRonda(impostorsCount);
@@ -86,7 +267,9 @@ export default class ImpostorGame {
             : `Ronda ${this.round}: ${impostorsCount} impostor(es)`;
         
         console.log(`=== INICIANDO RONDA ${this.round} ===`);
-        console.log(`Palabra secreta: ${this.secretWord}`);
+        console.log(`Categoría: ${this.currentCategory?.name || 'Aleatoria'}`);
+        console.log(`Palabra para tripulantes: ${this.secretWord}`);
+        console.log(`Palabra para impostor: ${this.impostorWord}`);
         console.log(`Jugadores activos: ${this.players.length}`);
         console.log(`Impostores: ${this.impostorsForRound.join(', ')}`);
         console.log(`Orden de turnos: ${this.getCurrentTurnOrder().join(' → ')}`);
@@ -95,7 +278,10 @@ export default class ImpostorGame {
             round: this.round,
             impostorsCount,
             message,
-            turnOrder: this.getCurrentTurnOrder()
+            turnOrder: this.getCurrentTurnOrder(),
+            category: this.currentCategory?.name,
+            palabraTripulante: this.secretWord,
+            palabraImpostor: this.impostorWord
         };
     }
     
@@ -201,7 +387,8 @@ export default class ImpostorGame {
         player: string,
         role: string,
         word: string,
-        round: number
+        round: number,
+        category?: string
     } {
         const playerIndex = this.turnOrder[this.currentPlayerIndex];
         const player = this.players[playerIndex];
@@ -210,14 +397,15 @@ export default class ImpostorGame {
         // Determinar qué palabra ve el jugador
         let word = this.secretWord;
         if (role === 'impostor') {
-            word = 'IMPOSTOR';
+            word = this.impostorWord === 'IMPOSTOR' ? 'IMPOSTOR' : this.impostorWord;
         }
         
         return {
             player,
             role,
             word,
-            round: this.round
+            round: this.round,
+            category: this.currentCategory?.name
         };
     }
     
@@ -225,20 +413,22 @@ export default class ImpostorGame {
     obtenerInfoParaJugador(jugador: string): {
         role: string,
         word: string,
-        isYourTurn: boolean
+        isYourTurn: boolean,
+        category?: string
     } {
         const role = this.rolesForRound.get(jugador) || 'normal';
         const isYourTurn = this.players[this.turnOrder[this.currentPlayerIndex]] === jugador;
         
         let word = this.secretWord;
         if (role === 'impostor') {
-            word = 'IMPOSTOR';
+            word = this.impostorWord === 'IMPOSTOR' ? 'IMPOSTOR' : this.impostorWord;
         }
         
         return {
             role,
             word,
-            isYourTurn
+            isYourTurn,
+            category: this.currentCategory?.name
         };
     }
     
@@ -335,6 +525,11 @@ export default class ImpostorGame {
         return null;
     }
     
+    // Obtiene las categorías seleccionadas
+    obtenerCategoriasSeleccionadas(): Category[] {
+        return [...this.selectedCategories];
+    }
+    
     // Para debugging o administración
     obtenerEstadoCompleto(): {
         round: number,
@@ -344,7 +539,11 @@ export default class ImpostorGame {
         currentPlayer: string,
         turnOrder: string[],
         secretWord: string,
-        isRoundActive: boolean
+        impostorWord: string,
+        currentCategory?: string,
+        isRoundActive: boolean,
+        categories: Category[],
+        totalWordsAvailable: number
     } {
         return {
             round: this.round,
@@ -354,7 +553,11 @@ export default class ImpostorGame {
             currentPlayer: this.players[this.turnOrder[this.currentPlayerIndex]] || '',
             turnOrder: this.getCurrentTurnOrder(),
             secretWord: this.secretWord,
-            isRoundActive: this.isRoundActive
+            impostorWord: this.impostorWord,
+            currentCategory: this.currentCategory?.name,
+            isRoundActive: this.isRoundActive,
+            categories: [...this.selectedCategories],
+            totalWordsAvailable: this.getTotalWordsCount()
         };
     }
     
@@ -371,9 +574,12 @@ export default class ImpostorGame {
         this.currentPlayerIndex = 0;
         this.turnOrder = [];
         this.secretWord = '';
+        this.impostorWord = '';
         this.rolesForRound.clear();
         this.impostorsForRound = [];
         this.isRoundActive = false;
+        this.usedWords.clear();
+        this.currentCategory = undefined;
         
         console.log("Juego reiniciado completamente");
     }
