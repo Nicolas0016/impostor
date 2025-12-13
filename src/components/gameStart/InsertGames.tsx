@@ -46,7 +46,7 @@ export default function InsertGames() {
   const [currentPlayer, setCurrentPlayer] = useState<string>('');
   const [playerInfo, setPlayerInfo] = useState<PlayerInfo | null>(null);
   const [gameState, setGameState] = useState<'config' | 'ready' | 'playing' | 'voting' | 'finished'>('config');
-  const [round, setRound] = useState<number>(0);
+  const [round, setRound] = useState<number>(game?.round || 3);
   const [message, setMessage] = useState<string>('Juego listo para comenzar');
   const [showRole, setShowRole] = useState<boolean>(false);
   const [eliminatedPlayers, setEliminatedPlayers] = useState<string[]>([]);
@@ -56,10 +56,29 @@ export default function InsertGames() {
     category?: string;
     palabraTripulante: string;
     palabraImpostor: string;
+    roundImpostors?: string[]; // Nuevo: impostores de esta ronda
   }>({
     palabraTripulante: '',
     palabraImpostor: ''
   });
+  
+  // Nuevos estados para funcionalidades adicionales
+  const [showImpostorsModal, setShowImpostorsModal] = useState<boolean>(false);
+  const [currentImpostorsInfo, setCurrentImpostorsInfo] = useState<{
+    round: number;
+    impostors: string[];
+    count: number;
+    palabraTripulante: string;
+    palabraImpostor: string;
+    category?: string;
+  } | null>(null);
+  const [allImpostorsHistory, setAllImpostorsHistory] = useState<Array<{
+    round: number;
+    impostors: string[];
+    palabraTripulante: string;
+    palabraImpostor: string;
+    category?: string;
+  }>>([]);
   
   // Cargar configuración desde localStorage
   useEffect(() => {
@@ -193,12 +212,20 @@ export default function InsertGames() {
     setGameState('playing');
     setShowRole(false);
     
-    // Guardar información de la ronda
+    // Guardar información de la ronda (incluyendo impostores)
     setRoundInfo({
       category: resultado.category,
       palabraTripulante: resultado.palabraTripulante,
-      palabraImpostor: resultado.palabraImpostor
+      palabraImpostor: resultado.palabraImpostor,
+      roundImpostors: resultado.roundImpostors
     });
+    
+    // Guardar info de impostores para consulta posterior
+    const impostorsInfo = game.obtenerImpostoresRonda();
+    setCurrentImpostorsInfo(impostorsInfo);
+    
+    // Actualizar historial de impostores
+    setAllImpostorsHistory(prev => [...prev, impostorsInfo]);
     
     const info = game.obtenerInfoJugadorActual();
     setCurrentPlayer(info.player);
@@ -209,6 +236,12 @@ export default function InsertGames() {
     console.log(`Categoría: ${resultado.category || 'Aleatoria'}`);
     console.log(`Palabra tripulantes: ${resultado.palabraTripulante}`);
     console.log(`Palabra impostor: ${resultado.palabraImpostor}`);
+    console.log(`Impostores: ${resultado.roundImpostors?.join(', ') || 'Ninguno'}`);
+    
+    // Mostrar información especial para impostores con palabra relacionada
+    if (resultado.palabraImpostor !== 'IMPOSTOR') {
+      console.log(`⚠️ IMPORTANTE: Los impostores tienen palabra relacionada "${resultado.palabraImpostor}"`);
+    }
     
     // Debug: mostrar estado del juego
     const estado = game.obtenerEstadoCompleto();
@@ -220,7 +253,8 @@ export default function InsertGames() {
         words: c.words.length,
         pairs: c.pairs?.length || 0
       })),
-      totalWords: estado.totalWordsAvailable
+      totalWords: estado.totalWordsAvailable,
+      impostorsStored: estado.storedImpostors
     });
   }
   
@@ -296,8 +330,16 @@ export default function InsertGames() {
     setRoundInfo({
       category: resultado.category,
       palabraTripulante: resultado.palabraTripulante,
-      palabraImpostor: resultado.palabraImpostor
+      palabraImpostor: resultado.palabraImpostor,
+      roundImpostors: resultado.roundImpostors
     });
+    
+    // Guardar info de impostores para consulta posterior
+    const impostorsInfo = game.obtenerImpostoresRonda();
+    setCurrentImpostorsInfo(impostorsInfo);
+    
+    // Actualizar historial de impostores
+    setAllImpostorsHistory(prev => [...prev, impostorsInfo]);
     
     const info = game.obtenerInfoJugadorActual();
     setCurrentPlayer(info.player);
@@ -305,6 +347,7 @@ export default function InsertGames() {
     setEliminatedPlayers([]);
     
     console.log(`Nueva ronda ${game.round}: ${resultado.category || 'Aleatoria'}`);
+    console.log(`Impostores: ${resultado.roundImpostors?.join(', ') || 'Ninguno'}`);
   }
   
   function reiniciarJuegoCompleto(): void {
@@ -324,6 +367,9 @@ export default function InsertGames() {
       palabraTripulante: '',
       palabraImpostor: ''
     });
+    setCurrentImpostorsInfo(null);
+    setAllImpostorsHistory([]);
+    setShowImpostorsModal(false);
     
     // Recargar configuración desde localStorage
     const savedConfig = localStorage.getItem('impostorGameConfig');
@@ -373,6 +419,31 @@ export default function InsertGames() {
         console.error('Error al recargar configuración:', error);
       }
     }
+  }
+  
+  // Función para mostrar información de impostores actual
+  function mostrarImpostoresActuales(): void {
+    if (!game) return;
+    
+    const impostorsInfo = game.obtenerImpostoresRonda();
+    setCurrentImpostorsInfo(impostorsInfo);
+    setShowImpostorsModal(true);
+  }
+  
+  // Función para obtener información de impostor específico
+  function obtenerInfoImpostorEspecifico(jugador: string) {
+    if (!game) return null;
+    
+    return game.obtenerInfoImpostorSiEs(jugador);
+  }
+  
+  // Función para obtener todos los impostores (historial)
+  function obtenerTodosLosImpostores() {
+    if (!game) return [];
+    
+    // Usar el método del juego o nuestro historial local
+    const fromGame = game.obtenerTodosLosImpostores();
+    return fromGame.length > 0 ? fromGame : allImpostorsHistory;
   }
   
   // Estado de carga
@@ -460,7 +531,7 @@ export default function InsertGames() {
   const estado = game.obtenerEstadoCompleto();
   const jugadoresActivos = estado.players.filter(j => !eliminatedPlayers.includes(j));
   
-  // Modal de confirmación
+  // Modal de confirmación de eliminación
   if (showConfirmModal && playerToEliminate) {
     return (
       <ConfirmModal
@@ -468,6 +539,103 @@ export default function InsertGames() {
         onCancel={cancelarEliminacion}
         onConfirm={eliminarJugador}
       />
+    );
+  }
+  
+  // Modal de información de impostores
+  if (showImpostorsModal && currentImpostorsInfo) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div className="bg-gray-800 rounded-xl p-6 shadow-2xl border border-red-700/50 max-w-md w-full">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-bold text-white">👥 Impostores en Ronda {currentImpostorsInfo.round}</h3>
+            <button
+              onClick={() => setShowImpostorsModal(false)}
+              className="text-gray-400 hover:text-white"
+            >
+              ✕
+            </button>
+          </div>
+          
+          <div className="space-y-4">
+            <div className="bg-gray-900/50 p-4 rounded-lg">
+              <h4 className="text-lg font-bold text-red-400 mb-2">Información de la Ronda:</h4>
+              <p className="text-gray-300">
+                <span className="font-bold">Categoría:</span> {currentImpostorsInfo.category || 'Aleatoria'}
+              </p>
+              <p className="text-gray-300">
+                <span className="font-bold">Palabra Tripulantes:</span> "{currentImpostorsInfo.palabraTripulante}"
+              </p>
+              <p className="text-gray-300">
+                <span className="font-bold">Palabra Impostor:</span> "{currentImpostorsInfo.palabraImpostor}"
+              </p>
+            </div>
+            
+            <div className="bg-gray-900/50 p-4 rounded-lg">
+              <h4 className="text-lg font-bold text-red-400 mb-2">Impostores ({currentImpostorsInfo.count}):</h4>
+              {currentImpostorsInfo.impostors.length > 0 ? (
+                <ul className="space-y-2">
+                  {currentImpostorsInfo.impostors.map(impostor => {
+                    const infoImpostor = obtenerInfoImpostorEspecifico(impostor);
+                    return (
+                      <li key={impostor} className="flex items-center justify-between p-2 bg-gray-800 rounded">
+                        <span className="text-white font-medium">{impostor}</span>
+                        <span className="text-red-400 font-bold">IMPOSTOR</span>
+                        {infoImpostor?.info && currentImpostorsInfo.palabraImpostor !== 'IMPOSTOR' && (
+                          <div className="text-sm text-yellow-300 mt-1 text-right">
+                            Palabra: "{infoImpostor.info.palabraImpostor}"
+                          </div>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p className="text-gray-400">No hay impostores en esta ronda.</p>
+              )}
+            </div>
+            
+            {currentImpostorsInfo.palabraImpostor !== 'IMPOSTOR' && (
+              <div className="bg-yellow-900/30 p-4 rounded-lg border border-yellow-700/50">
+                <h4 className="text-lg font-bold text-yellow-400 mb-2">⚠️ Información Especial</h4>
+                <p className="text-yellow-300">
+                  En esta ronda los impostores tienen una palabra relacionada:
+                  <span className="font-bold block mt-1">"{currentImpostorsInfo.palabraImpostor}"</span>
+                </p>
+                <p className="text-yellow-300 text-sm mt-2">
+                  (Los tripulantes ven: "{currentImpostorsInfo.palabraTripulante}")
+                </p>
+              </div>
+            )}
+            
+            <div className="bg-gray-900/50 p-4 rounded-lg">
+              <h4 className="text-lg font-bold text-blue-400 mb-2">Historial de Impostores:</h4>
+              <div className="space-y-2 max-h-40 overflow-y-auto">
+                {obtenerTodosLosImpostores().map((item, index) => (
+                  <div key={index} className="p-2 bg-gray-800 rounded">
+                    <div className="flex justify-between">
+                      <span className="text-gray-300">Ronda {item.round}</span>
+                      <span className="text-red-400 font-bold">{item.impostors.length} impostor(es)</span>
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      {item.impostors.join(', ')}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          
+          <div className="mt-6 flex justify-end">
+            <button
+              onClick={() => setShowImpostorsModal(false)}
+              className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-lg transition-all duration-300"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
     );
   }
   
@@ -482,6 +650,8 @@ export default function InsertGames() {
           eliminatedPlayers={eliminatedPlayers}
           estado={estado}
           onStartRound={comenzarRonda}
+          onShowImpostors={mostrarImpostoresActuales}
+          roundInfo={roundInfo}
         />
       );
       
@@ -495,6 +665,7 @@ export default function InsertGames() {
           showRole={showRole}
           onShowRole={mostrarRol}
           onPassTurn={pasarTurno}
+          roundInfo={roundInfo}
         />
       );
       
@@ -506,6 +677,8 @@ export default function InsertGames() {
           jugadoresActivos={jugadoresActivos}
           eliminatedPlayers={eliminatedPlayers}
           onConfirmElimination={confirmarEliminacion}
+          onShowImpostors={mostrarImpostoresActuales}
+          roundInfo={roundInfo}
         />
       );
       
@@ -521,6 +694,8 @@ export default function InsertGames() {
           eliminatedPlayers={eliminatedPlayers}
           onNewRound={iniciarNuevaRonda}
           onRestart={reiniciarJuegoCompleto}
+          onShowImpostors={mostrarImpostoresActuales}
+          allImpostorsHistory={allImpostorsHistory}
         />
       );
       
