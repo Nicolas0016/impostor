@@ -157,24 +157,6 @@ export function ModeSelector({ mechanics }: ModeSelectorProps) {
         </div>
       </div>
 
-      {/* Instrucciones */}
-      <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
-        <div class="flex items-start">
-          <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div>
-            <h4 class="font-semibold text-blue-800 mb-1">Consejos de selección</h4>
-            <ul class="text-blue-700 text-sm space-y-1">
-              <li>• Para principiantes: Selecciona 1-2 modalidades simples</li>
-              <li>• Para expertos: Combina 3+ modalidades para mayor desafío</li>
-              <li>• El modo aleatorio mantiene la partida impredecible</li>
-            </ul>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

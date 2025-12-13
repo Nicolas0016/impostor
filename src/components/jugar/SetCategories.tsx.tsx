@@ -157,9 +157,6 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
   return (
     <div class="bg-white rounded-2xl p-8 shadow-xl">
       <h2 class="text-2xl font-bold text-gray-900 mb-2">Categorías de Palabras</h2>
-      <p class="text-gray-600 mb-8">
-        Selecciona las categorías que quieres usar en esta partida.
-      </p>
 
       {/* Barra de búsqueda */}
       <div class="mb-8">
@@ -179,23 +176,7 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
         </div>
       </div>
 
-      {/* Contador de selección */}
-      <div class="mb-6 flex items-center justify-between">
-        <div>
-          <span class="text-sm text-gray-600">
-            {filteredCategories.length} categoría{filteredCategories.length !== 1 ? 's' : ''} disponible{filteredCategories.length !== 1 ? 's' : ''}
-          </span>
-          {searchTerm && (
-            <span class="text-sm text-gray-500 ml-2">
-              ({filteredCategories.length} resultado{filteredCategories.length !== 1 ? 's' : ''})
-            </span>
-          )}
-        </div>
-        <div class="text-sm font-medium text-blue-600">
-          {selectedCategories.length} seleccionada{selectedCategories.length !== 1 ? 's' : ''}
-        </div>
-      </div>
-
+      
       {/* Lista de categorías existentes con scroll fijo */}
       <div class="mb-8">
         <div class="border border-gray-200 rounded-xl overflow-hidden">
@@ -262,17 +243,6 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
                                 )}
                               </div>
                             </div>
-                            
-                            {isSelected && (
-                              <div class="flex-shrink-0 ml-4">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                  </svg>
-                                  Seleccionada
-                                </span>
-                              </div>
-                            )}
                           </div>
                           
                           {/* Mostrar algunos ejemplos */}
@@ -321,26 +291,6 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
         </div>
       </div>
 
-      {/* Información sobre selección */}
-      <div class="mb-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
-        <div class="flex items-center">
-          <div class="flex-shrink-0">
-            <svg class="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div class="ml-3">
-            <div class="text-sm text-blue-700">
-              <span class="font-medium">Seleccionadas {selectedCategories.length} categoría{selectedCategories.length !== 1 ? 's' : ''}.</span>
-              {selectedCategories.length === 0 ? (
-                <span> Selecciona al menos 1 para usar en el juego.</span>
-              ) : (
-                <span> Estas se usarán para generar las palabras del juego.</span>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Botón para agregar nueva categoría */}
       <div class="pt-6 border-t border-gray-200">

@@ -179,10 +179,10 @@ const color = getColorConfig(mechanic.color);
   ${color.bg} ${color.bgDark} 
   ${color.hoverBorder} ${color.hoverBorderDark} 
   group transition-all duration-300 hover:shadow-xl dark:hover:shadow-gray-900/50 
-  hover:-translate-y-1 py-6 px-6 rounded-2xl backdrop-blur-sm
+  hover:-translate-y-1 py-6 px-6 rounded-2xl backdrop-blur-sm overflow-hidden
 `}>
   <!-- Encabezado con icono y título -->
-  <div class="flex items-start justify-between mb-4">
+  <div class="flex items-center justify-between">
     <div class="flex items-center gap-4">
       <!-- Icono con efecto de gradiente -->
       <div class={`
@@ -196,8 +196,8 @@ const color = getColorConfig(mechanic.color);
         </span>
       </div>
       
-      <div class="flex-1">
-        <div class="flex items-center gap-3 flex-wrap">
+      <div>
+        <div class="flex items-center gap-3 flex-wrap mb-1">
           <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">
             {mechanic.name}
           </h3>
@@ -205,103 +205,113 @@ const color = getColorConfig(mechanic.color);
             {capitalize(mechanic.difficulty)}
           </span>
         </div>
+        <p class="text-gray-600 dark:text-gray-400 text-sm">
+          {mechanic.description}
+        </p>
+      </div>
+    </div>
+
+    <!-- Botón de tres puntos para expandir -->
+    <button 
+      type="button"
+      class="expand-btn ml-4 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-gray-800/50 transition-colors"
+      aria-label="Mostrar detalles"
+      title="Mostrar detalles"
+    >
+      <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+      </svg>
+    </button>
+  </div>
+  
+  <!-- Contenido expandible (oculto por defecto) -->
+  <div class="expandable-content overflow-hidden max-h-0 transition-all duration-500 ease-in-out">
+    <div class="pt-6 mt-6 border-t ${color.border} ${color.borderDark}">
+      <!-- Detalles de mecánica y objetivo -->
+      <div class="space-y-6">
+        {mechanic.details?.mecanica && (
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <div class={`w-3 h-3 rounded-full ${color.text} ${color.textDark}`}></div>
+              <span class="font-semibold text-gray-800 dark:text-gray-300 text-lg">
+                Mecánica
+              </span>
+            </div>
+            <p class="text-gray-600 dark:text-gray-400 pl-5 leading-relaxed">
+              {mechanic.details.mecanica}
+            </p>
+          </div>
+        )}
+        
+        {mechanic.details?.objetivo && (
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <div class={`w-3 h-3 rounded-full ${color.text} ${color.textDark}`}></div>
+              <span class="font-semibold text-gray-800 dark:text-gray-300 text-lg">
+                Objetivo
+              </span>
+            </div>
+            <p class="text-gray-600 dark:text-gray-400 pl-5 leading-relaxed">
+              {mechanic.details.objetivo}
+            </p>
+          </div>
+        )}
+        
+        {mechanic.details?.rol && (
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <div class={`w-3 h-3 rounded-full ${color.text} ${color.textDark}`}></div>
+              <span class="font-semibold text-gray-800 dark:text-gray-300 text-lg">
+                Rol principal
+              </span>
+            </div>
+            <p class="text-gray-600 dark:text-gray-400 pl-5 leading-relaxed">
+              {mechanic.details.rol}
+            </p>
+          </div>
+        )}
+        
+        {mechanic.details?.efecto && (
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <div class={`w-3 h-3 rounded-full ${color.text} ${color.textDark}`}></div>
+              <span class="font-semibold text-gray-800 dark:text-gray-300 text-lg">
+                Efecto en el juego
+              </span>
+            </div>
+            <p class="text-gray-600 dark:text-gray-400 pl-5 leading-relaxed">
+              {mechanic.details.efecto}
+            </p>
+          </div>
+        )}
+      </div>
+      
+      <!-- Botón para cerrar -->
+      <div class="mt-8 text-center">
+        <button 
+          type="button"
+          class="close-btn inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+          aria-label="Ocultar detalles"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+          </svg>
+          Ocultar detalles
+        </button>
       </div>
     </div>
   </div>
-  
-  <!-- Descripción principal -->
-  <div class="mb-6">
-    <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-      {mechanic.description}
-    </p>
-  </div>
-  
-  <!-- Detalles adicionales -->
-  {mechanic.details && (
-    <div class={`
-      space-y-4 text-sm border-t pt-6 mt-6 
-      ${color.border} ${color.borderDark}
-    `}>
-      {mechanic.details.mecanica && (
-        <div>
-          <div class="flex items-center gap-2 mb-2">
-            <div class={`w-2 h-2 rounded-full ${color.text} ${color.textDark}`}></div>
-            <span class="font-semibold text-gray-800 dark:text-gray-300">
-              Mecánica
-            </span>
-          </div>
-          <p class="text-gray-600 dark:text-gray-400 pl-4">
-            {mechanic.details.mecanica}
-          </p>
-        </div>
-      )}
-      
-      {mechanic.details.objetivo && (
-        <div>
-          <div class="flex items-center gap-2 mb-2">
-            <div class={`w-2 h-2 rounded-full ${color.text} ${color.textDark}`}></div>
-            <span class="font-semibold text-gray-800 dark:text-gray-300">
-              Objetivo
-            </span>
-          </div>
-          <p class="text-gray-600 dark:text-gray-400 pl-4">
-            {mechanic.details.objetivo}
-          </p>
-        </div>
-      )}
-      
-      {mechanic.details.rol && (
-        <div>
-          <div class="flex items-center gap-2 mb-2">
-            <div class={`w-2 h-2 rounded-full ${color.text} ${color.textDark}`}></div>
-            <span class="font-semibold text-gray-800 dark:text-gray-300">
-              Rol principal
-            </span>
-          </div>
-          <p class="text-gray-600 dark:text-gray-400 pl-4">
-            {mechanic.details.rol}
-          </p>
-        </div>
-      )}
-      
-      {mechanic.details.efecto && (
-        <div>
-          <div class="flex items-center gap-2 mb-2">
-            <div class={`w-2 h-2 rounded-full ${color.text} ${color.textDark}`}></div>
-            <span class="font-semibold text-gray-800 dark:text-gray-300">
-              Efecto en el juego
-            </span>
-          </div>
-          <p class="text-gray-600 dark:text-gray-400 pl-4">
-            {mechanic.details.efecto}
-          </p>
-        </div>
-      )}
-      
-      {mechanic.details.porQueFunciona && (
-        <div>
-          <div class="flex items-center gap-2 mb-2">
-            <div class={`w-2 h-2 rounded-full ${color.text} ${color.textDark}`}></div>
-            <span class="font-semibold text-gray-800 dark:text-gray-300">
-              ¿Por qué funciona?
-            </span>
-          </div>
-          <p class="text-gray-600 dark:text-gray-400 pl-4">
-            {mechanic.details.porQueFunciona}
-          </p>
-        </div>
-      )}
-    </div>
-  )}
 </div>
 
 <style>
-  /* Transiciones suaves para modo oscuro */
+  /* Estilos base */
   .card {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(0);
   }
   
   .card:hover {
+    transform: translateY(-4px);
     box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
   }
   
@@ -309,12 +319,67 @@ const color = getColorConfig(mechanic.color);
     box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3);
   }
   
-  /* Efecto de elevación */
-  .card {
-    transform: translateY(0);
+  /* Estado expandido */
+  .card.expanded {
+    padding-bottom: 2rem;
   }
   
-  .card:hover {
-    transform: translateY(-4px);
+  .card.expanded .expandable-content {
+    max-height: 1000px;
+  }
+  
+  /* Rotación del botón cuando está expandido */
+  .card.expanded .expand-btn svg {
+    transform: rotate(90deg);
+  }
+  
+  .expand-btn svg {
+    transition: transform 0.3s ease;
   }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.card');
+    
+    cards.forEach(card => {
+      const expandBtn = card.querySelector('.expand-btn');
+      const closeBtn = card.querySelector('.close-btn');
+      const expandableContent = card.querySelector('.expandable-content');
+      
+      if (expandBtn && expandableContent) {
+        // Expandir al hacer clic en el botón de tres puntos
+        expandBtn.addEventListener('click', () => {
+          card.classList.add('expanded');
+          expandableContent.style.maxHeight = expandableContent.scrollHeight + 'px';
+        });
+        
+        // Cerrar al hacer clic en el botón de cerrar
+        if (closeBtn) {
+          closeBtn.addEventListener('click', () => {
+            card.classList.remove('expanded');
+            expandableContent.style.maxHeight = '0';
+          });
+        }
+        
+        // Cerrar al hacer clic fuera del contenido expandido
+        document.addEventListener('click', (e) => {
+          if (card.classList.contains('expanded') && 
+              !card.contains(e.target) && 
+              e.target !== expandBtn) {
+            card.classList.remove('expanded');
+            expandableContent.style.maxHeight = '0';
+          }
+        });
+        
+        // Manejar tecla Escape para cerrar
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && card.classList.contains('expanded')) {
+            card.classList.remove('expanded');
+            expandableContent.style.maxHeight = '0';
+          }
+        });
+      }
+    });
+  });
+</script>
