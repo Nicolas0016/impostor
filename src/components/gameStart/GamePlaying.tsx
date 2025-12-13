@@ -60,16 +60,15 @@ export default function GamePlaying({
               onClick={onShowRole}
               className="w-full bg-white/20 hover:bg-white/30 backdrop-blur-sm border-2 border-white/30 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] text-lg"
             >
-              👁️ Descubrir Rol y Palabra
+              Descubrir Palabra
             </button>
           ) : (
             <div className="space-y-6 animate-fadeIn">
               {/* Información del rol */}
               {playerInfo?.role === 'impostor' ? (
                 <div className="space-y-4">
-                  {/* Tarjeta de IMPOSTOR */}
                   <div className="p-6 rounded-xl bg-gradient-to-br from-red-900/60 to-red-800/40 border-2 border-red-500/50 shadow-lg">
-                    <div className="text-5xl font-bold text-red-300 font-mono tracking-wider mb-2">
+                    <div className="text-3xl font-bold text-red-300 font-mono tracking-wider mb-2">
                       IMPOSTOR
                     </div>
                     <div className="text-lg text-red-200">
@@ -85,7 +84,7 @@ export default function GamePlaying({
                     <div className="text-sm text-gray-400 uppercase tracking-wider mb-2">
                       Palabra secreta de la ronda
                     </div>
-                    <div className="text-4xl font-bold text-white font-mono tracking-wider">
+                    <div className="text-3xl font-bold text-white font-mono tracking-wider">
                       {playerInfo?.word || roundInfo?.palabraTripulante || game.secretWord}
                     </div>
                   </div>
