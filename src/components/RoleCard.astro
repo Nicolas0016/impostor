@@ -14,79 +14,233 @@ interface Props {
 
 const { role } = Astro.props;
 
-// Configuración simplificada
+// Configuración completa para modo claro y oscuro
 const teamConfig: Record<string, { 
-  badge: string; 
-  border: string;
-  gradient: string;
+  badgeLight: string; 
+  badgeDark: string;
+  borderLight: string;
+  borderDark: string;
+  hoverBorderLight: string;
+  hoverBorderDark: string;
+  gradientLight: string;
+  gradientDark: string;
+  bgLight: string;
+  bgDark: string;
+  textLight: string;
+  textDark: string;
 }> = {
   green: {
-    badge: 'bg-green-100 text-green-800',
-    border: 'border-green-200 hover:border-green-300',
-    gradient: 'from-green-500 to-emerald-600'
+    badgeLight: 'bg-green-100 text-green-800',
+    badgeDark: 'dark:bg-green-900/40 dark:text-green-300',
+    borderLight: 'border-green-200',
+    borderDark: 'dark:border-green-900',
+    hoverBorderLight: 'hover:border-green-300',
+    hoverBorderDark: 'dark:hover:border-green-700',
+    gradientLight: 'from-green-500 to-emerald-600',
+    gradientDark: 'dark:from-green-600 dark:to-emerald-700',
+    bgLight: 'bg-green-50',
+    bgDark: 'dark:bg-green-950/20',
+    textLight: 'text-green-600',
+    textDark: 'dark:text-green-400'
   },
   red: {
-    badge: 'bg-red-100 text-red-800',
-    border: 'border-red-200 hover:border-red-300',
-    gradient: 'from-red-500 to-rose-600'
+    badgeLight: 'bg-red-100 text-red-800',
+    badgeDark: 'dark:bg-red-900/40 dark:text-red-300',
+    borderLight: 'border-red-200',
+    borderDark: 'dark:border-red-900',
+    hoverBorderLight: 'hover:border-red-300',
+    hoverBorderDark: 'dark:hover:border-red-700',
+    gradientLight: 'from-red-500 to-rose-600',
+    gradientDark: 'dark:from-red-600 dark:to-rose-700',
+    bgLight: 'bg-red-50',
+    bgDark: 'dark:bg-red-950/20',
+    textLight: 'text-red-600',
+    textDark: 'dark:text-red-400'
   },
   blue: {
-    badge: 'bg-blue-100 text-blue-800',
-    border: 'border-blue-200 hover:border-blue-300',
-    gradient: 'from-blue-500 to-sky-600'
+    badgeLight: 'bg-blue-100 text-blue-800',
+    badgeDark: 'dark:bg-blue-900/40 dark:text-blue-300',
+    borderLight: 'border-blue-200',
+    borderDark: 'dark:border-blue-900',
+    hoverBorderLight: 'hover:border-blue-300',
+    hoverBorderDark: 'dark:hover:border-blue-700',
+    gradientLight: 'from-blue-500 to-sky-600',
+    gradientDark: 'dark:from-blue-600 dark:to-sky-700',
+    bgLight: 'bg-blue-50',
+    bgDark: 'dark:bg-blue-950/20',
+    textLight: 'text-blue-600',
+    textDark: 'dark:text-blue-400'
   },
   purple: {
-    badge: 'bg-purple-100 text-purple-800',
-    border: 'border-purple-200 hover:border-purple-300',
-    gradient: 'from-purple-500 to-violet-600'
+    badgeLight: 'bg-purple-100 text-purple-800',
+    badgeDark: 'dark:bg-purple-900/40 dark:text-purple-300',
+    borderLight: 'border-purple-200',
+    borderDark: 'dark:border-purple-900',
+    hoverBorderLight: 'hover:border-purple-300',
+    hoverBorderDark: 'dark:hover:border-purple-700',
+    gradientLight: 'from-purple-500 to-violet-600',
+    gradientDark: 'dark:from-purple-600 dark:to-violet-700',
+    bgLight: 'bg-purple-50',
+    bgDark: 'dark:bg-purple-950/20',
+    textLight: 'text-purple-600',
+    textDark: 'dark:text-purple-400'
   },
   pink: {
-    badge: 'bg-pink-100 text-pink-800',
-    border: 'border-pink-200 hover:border-pink-300',
-    gradient: 'from-pink-500 to-rose-600'
+    badgeLight: 'bg-pink-100 text-pink-800',
+    badgeDark: 'dark:bg-pink-900/40 dark:text-pink-300',
+    borderLight: 'border-pink-200',
+    borderDark: 'dark:border-pink-900',
+    hoverBorderLight: 'hover:border-pink-300',
+    hoverBorderDark: 'dark:hover:border-pink-700',
+    gradientLight: 'from-pink-500 to-rose-600',
+    gradientDark: 'dark:from-pink-600 dark:to-rose-700',
+    bgLight: 'bg-pink-50',
+    bgDark: 'dark:bg-pink-950/20',
+    textLight: 'text-pink-600',
+    textDark: 'dark:text-pink-400'
   },
   orange: {
-    badge: 'bg-orange-100 text-orange-800',
-    border: 'border-orange-200 hover:border-orange-300',
-    gradient: 'from-orange-500 to-amber-600'
+    badgeLight: 'bg-orange-100 text-orange-800',
+    badgeDark: 'dark:bg-orange-900/40 dark:text-orange-300',
+    borderLight: 'border-orange-200',
+    borderDark: 'dark:border-orange-900',
+    hoverBorderLight: 'hover:border-orange-300',
+    hoverBorderDark: 'dark:hover:border-orange-700',
+    gradientLight: 'from-orange-500 to-amber-600',
+    gradientDark: 'dark:from-orange-600 dark:to-amber-700',
+    bgLight: 'bg-orange-50',
+    bgDark: 'dark:bg-orange-950/20',
+    textLight: 'text-orange-600',
+    textDark: 'dark:text-orange-400'
+  },
+  gray: {
+    badgeLight: 'bg-gray-100 text-gray-800',
+    badgeDark: 'dark:bg-gray-800 dark:text-gray-300',
+    borderLight: 'border-gray-200',
+    borderDark: 'dark:border-gray-700',
+    hoverBorderLight: 'hover:border-gray-300',
+    hoverBorderDark: 'dark:hover:border-gray-600',
+    gradientLight: 'from-gray-500 to-gray-600',
+    gradientDark: 'dark:from-gray-600 dark:to-gray-700',
+    bgLight: 'bg-gray-50',
+    bgDark: 'dark:bg-gray-900/20',
+    textLight: 'text-gray-600',
+    textDark: 'dark:text-gray-400'
   }
 };
 
 // Obtener configuración
 const getTeamConfig = (color: string) => {
-  return teamConfig[color] || teamConfig.green;
+  return teamConfig[color] || teamConfig.gray;
 };
 
 const teamCfg = getTeamConfig(role.teamColor);
-const isCitizen = role.team === 'Ciudadanos';
 ---
 
-<div class={`card border-2 ${teamCfg.border} transition-all duration-300 hover:shadow-xl hover:-translate-y-1 py-1 px-1.5 rounded-2xl`}>
-  <div class="flex items-start gap-4">
-    <!-- Icono -->
-    <div class="flex-shrink-0">
-      <div class={`w-14 h-14 rounded-xl bg-gradient-to-br ${teamCfg.gradient} flex items-center justify-center text-white shadow-md`}>
-        <span class="text-2xl font-bold">{role.name.charAt(0)}</span>
+<div class={`
+  card border-2 ${teamCfg.borderLight} ${teamCfg.borderDark} 
+  ${teamCfg.bgLight} ${teamCfg.bgDark}
+  ${teamCfg.hoverBorderLight} ${teamCfg.hoverBorderDark}
+  transition-all duration-300 hover:shadow-xl dark:hover:shadow-gray-900/50 
+  hover:-translate-y-1 p-6 rounded-2xl backdrop-blur-sm
+  group hover:scale-[1.02]
+`}>
+  <div class="flex items-start gap-5">
+    <!-- Icono con gradiente y efecto de elevación -->
+    <div class="relative flex-shrink-0">
+      <!-- Sombra del icono -->
+      <div class="absolute inset-0 bg-gradient-to-br ${teamCfg.gradientLight} ${teamCfg.gradientDark} opacity-70 blur-md rounded-xl group-hover:blur-lg transition-all"></div>
+      
+      <!-- Icono principal -->
+      <div class={`
+        relative w-16 h-16 rounded-xl bg-gradient-to-br 
+        ${teamCfg.gradientLight} ${teamCfg.gradientDark}
+        flex items-center justify-center text-white shadow-lg
+        group-hover:shadow-xl group-hover:scale-105 transition-all
+      `}>
+        <span class="text-3xl font-bold">{role.name.charAt(0)}</span>
+        
+        <!-- Efecto de brillo interno -->
+        <div class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-xl"></div>
       </div>
     </div>
     
-    <!-- Contenido -->
-    <div class="flex-1">
-      <div class="flex justify-between items-start mb-2">
-        <h3 class="text-xl font-bold text-gray-800">{role.name}</h3>
-        <span class={`text-xs font-semibold px-2 py-1 rounded-full ${teamCfg.badge}`}>
-          {role.team}
-        </span>
+    <!-- Contenido principal -->
+    <div class="flex-1 min-w-0">
+      <!-- Header con nombre y equipo -->
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-4">
+        <div class="flex items-center">
+          <h3 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+            {role.name}
+          </h3>
+          
+          <!-- Etiqueta de equipo con icono -->
+          <div class="flex items-center gap-2">
+            <div class={`w-2 h-2 rounded-full ${teamCfg.textLight} ${teamCfg.textDark}`}></div>
+            <span class={`text-xs font-semibold px-3 py-1.5 rounded-full ${teamCfg.badgeLight} ${teamCfg.badgeDark} flex items-center gap-1.5`}>
+              {role.team === 'Ciudadanos' ? (
+                <>
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  {role.team}
+                </>
+              ) : role.team === 'Impostores' ? (
+                <>
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
+                  </svg>
+                  {role.team}
+                </>
+              ) : (
+                role.team
+              )}
+            </span>
+          </div>
+        </div>
       </div>
       
-      <p class="text-gray-600 mb-3 text-sm">
-        {role.description}
-      </p>
-      
-      <div class="mt-4 pt-3 border-t border-gray-100">
-        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Habilidad</span>
-        <p class="text-sm text-gray-700 mt-1 font-medium">{role.ability}</p>
+      <!-- Descripción -->
+      <div class="mb-5">
+        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+          {role.description}
+        </p>
       </div>
+      
+      <!-- Habilidad destacada -->
+      <div class="mt-6 pt-5 border-t border-gray-200/50 dark:border-gray-700/50">
+        <div class="flex items-center gap-2 mb-2">
+          <svg class={`w-4 h-4 ${teamCfg.textLight} ${teamCfg.textDark}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+            Habilidad Especial
+          </span>
+        </div>
+        <div class={`bg-white/50 dark:bg-gray-800/30 rounded-lg p-3 border ${teamCfg.borderLight} ${teamCfg.borderDark}`}>
+          <p class="text-sm font-medium text-gray-700 dark:text-gray-200">
+            {role.ability}
+          </p>
+        </div>
+      </div>
+      
     </div>
   </div>
 </div>
+
+<style>
+  .card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .card:hover {
+    transform: translateY(-4px) scale(1.02);
+  }
+  
+  /* Efecto de brillo sutil en hover */
+  .card:hover .group-hover\:blur-lg {
+    filter: blur(12px);
+    opacity: 0.5;
+  }
+</style>
