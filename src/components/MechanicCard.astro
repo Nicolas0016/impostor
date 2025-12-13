@@ -19,73 +19,142 @@ interface Props {
 
 const { mechanic } = Astro.props;
 
-// Configuración centralizada de colores
+// Configuración centralizada de colores (modo claro + oscuro)
 const colorConfig: Record<string, {
   border: string;
+  borderDark: string;
   bg: string;
+  bgDark: string;
   text: string;
+  textDark: string;
   hoverBorder: string;
+  hoverBorderDark: string;
+  iconBg: string;
+  iconBgDark: string;
 }> = {
   blue: {
     border: 'border-blue-200',
+    borderDark: 'dark:border-blue-900',
     bg: 'bg-blue-50',
+    bgDark: 'dark:bg-blue-950/30',
     text: 'text-blue-600',
-    hoverBorder: 'hover:border-blue-300'
+    textDark: 'dark:text-blue-400',
+    hoverBorder: 'hover:border-blue-300',
+    hoverBorderDark: 'dark:hover:border-blue-700',
+    iconBg: 'bg-blue-100',
+    iconBgDark: 'dark:bg-blue-900/50'
   },
   red: {
     border: 'border-red-200',
+    borderDark: 'dark:border-red-900',
     bg: 'bg-red-50',
+    bgDark: 'dark:bg-red-950/30',
     text: 'text-red-600',
-    hoverBorder: 'hover:border-red-300'
+    textDark: 'dark:text-red-400',
+    hoverBorder: 'hover:border-red-300',
+    hoverBorderDark: 'dark:hover:border-red-700',
+    iconBg: 'bg-red-100',
+    iconBgDark: 'dark:bg-red-900/50'
   },
   green: {
     border: 'border-green-200',
+    borderDark: 'dark:border-green-900',
     bg: 'bg-green-50',
+    bgDark: 'dark:bg-green-950/30',
     text: 'text-green-600',
-    hoverBorder: 'hover:border-green-300'
+    textDark: 'dark:text-green-400',
+    hoverBorder: 'hover:border-green-300',
+    hoverBorderDark: 'dark:hover:border-green-700',
+    iconBg: 'bg-green-100',
+    iconBgDark: 'dark:bg-green-900/50'
   },
   yellow: {
     border: 'border-yellow-200',
+    borderDark: 'dark:border-yellow-900',
     bg: 'bg-yellow-50',
+    bgDark: 'dark:bg-yellow-950/30',
     text: 'text-yellow-600',
-    hoverBorder: 'hover:border-yellow-300'
+    textDark: 'dark:text-yellow-400',
+    hoverBorder: 'hover:border-yellow-300',
+    hoverBorderDark: 'dark:hover:border-yellow-700',
+    iconBg: 'bg-yellow-100',
+    iconBgDark: 'dark:bg-yellow-900/50'
   },
   purple: {
     border: 'border-purple-200',
+    borderDark: 'dark:border-purple-900',
     bg: 'bg-purple-50',
+    bgDark: 'dark:bg-purple-950/30',
     text: 'text-purple-600',
-    hoverBorder: 'hover:border-purple-300'
+    textDark: 'dark:text-purple-400',
+    hoverBorder: 'hover:border-purple-300',
+    hoverBorderDark: 'dark:hover:border-purple-700',
+    iconBg: 'bg-purple-100',
+    iconBgDark: 'dark:bg-purple-900/50'
   },
   pink: {
     border: 'border-pink-200',
+    borderDark: 'dark:border-pink-900',
     bg: 'bg-pink-50',
+    bgDark: 'dark:bg-pink-950/30',
     text: 'text-pink-600',
-    hoverBorder: 'hover:border-pink-300'
+    textDark: 'dark:text-pink-400',
+    hoverBorder: 'hover:border-pink-300',
+    hoverBorderDark: 'dark:hover:border-pink-700',
+    iconBg: 'bg-pink-100',
+    iconBgDark: 'dark:bg-pink-900/50'
   },
   indigo: {
     border: 'border-indigo-200',
+    borderDark: 'dark:border-indigo-900',
     bg: 'bg-indigo-50',
+    bgDark: 'dark:bg-indigo-950/30',
     text: 'text-indigo-600',
-    hoverBorder: 'hover:border-indigo-300'
+    textDark: 'dark:text-indigo-400',
+    hoverBorder: 'hover:border-indigo-300',
+    hoverBorderDark: 'dark:hover:border-indigo-700',
+    iconBg: 'bg-indigo-100',
+    iconBgDark: 'dark:bg-indigo-900/50'
   },
   gray: {
     border: 'border-gray-200',
+    borderDark: 'dark:border-gray-800',
     bg: 'bg-gray-50',
+    bgDark: 'dark:bg-gray-900/30',
     text: 'text-gray-600',
-    hoverBorder: 'hover:border-gray-300'
+    textDark: 'dark:text-gray-400',
+    hoverBorder: 'hover:border-gray-300',
+    hoverBorderDark: 'dark:hover:border-gray-700',
+    iconBg: 'bg-gray-100',
+    iconBgDark: 'dark:bg-gray-800/50'
   },
   orange: {
     border: 'border-orange-200',
+    borderDark: 'dark:border-orange-900',
     bg: 'bg-orange-50',
+    bgDark: 'dark:bg-orange-950/30',
     text: 'text-orange-600',
-    hoverBorder: 'hover:border-orange-300'
+    textDark: 'dark:text-orange-400',
+    hoverBorder: 'hover:border-orange-300',
+    hoverBorderDark: 'dark:hover:border-orange-700',
+    iconBg: 'bg-orange-100',
+    iconBgDark: 'dark:bg-orange-900/50'
   }
 };
 
-const difficultyColors: Record<string, string> = {
-  baja: 'bg-green-100 text-green-800',
-  media: 'bg-yellow-100 text-yellow-800',
-  alta: 'bg-red-100 text-red-800'
+const difficultyColors: Record<string, { light: string; dark: string }> = {
+  baja: {
+    light: 'bg-green-100 text-green-800',
+    dark: 'dark:bg-green-900/40 dark:text-green-300'
+  },
+  media: {
+    light: 'bg-yellow-100 text-yellow-800',
+    dark: 'dark:bg-yellow-900/40 dark:text-yellow-300'
+  },
+  alta: {
+    light: 'bg-red-100 text-red-800',
+    dark: 'dark:bg-red-900/40 dark:text-red-300'
+  }
 };
 
 // Obtener configuración de color con valores por defecto
@@ -94,7 +163,8 @@ const getColorConfig = (color: string) => {
 };
 
 const getDifficultyColor = (difficulty: string): string => {
-  return difficultyColors[difficulty] || difficultyColors.media;
+  const config = difficultyColors[difficulty] || difficultyColors.media;
+  return `${config.light} ${config.dark}`;
 };
 
 const capitalize = (str: string): string => {
@@ -104,63 +174,147 @@ const capitalize = (str: string): string => {
 const color = getColorConfig(mechanic.color);
 ---
 
-<div class={`card border-2 ${color.border} ${color.bg} ${color.hoverBorder} group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 py-1 px-1.5 rounded-2xl`}>
+<div class={`
+  card border-2 ${color.border} ${color.borderDark} 
+  ${color.bg} ${color.bgDark} 
+  ${color.hoverBorder} ${color.hoverBorderDark} 
+  group transition-all duration-300 hover:shadow-xl dark:hover:shadow-gray-900/50 
+  hover:-translate-y-1 py-6 px-6 rounded-2xl backdrop-blur-sm
+`}>
+  <!-- Encabezado con icono y título -->
   <div class="flex items-start justify-between mb-4">
-    <div class="flex items-center gap-3">
-      <!-- Icono con el color correspondiente -->
-      <div class={`w-12 h-12 rounded-lg flex items-center justify-center shadow-sm ${color.bg.replace('50', '100')}`}>
-        <span class={`text-2xl font-bold ${color.text}`}>
-          {mechanic.name.charAt(0)}
+    <div class="flex items-center gap-4">
+      <!-- Icono con efecto de gradiente -->
+      <div class={`
+        relative w-14 h-14 rounded-xl flex items-center justify-center shadow-sm
+        ${color.iconBg} ${color.iconBgDark}
+        before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/50 before:to-transparent 
+        dark:before:from-white/10 before:rounded-xl
+      `}>
+        <span class={`text-2xl font-bold ${color.text} ${color.textDark} relative z-10`}>
+          { mechanic.name.charAt(0)}
         </span>
       </div>
       
-      <div>
-        <h3 class="text-xl font-bold text-gray-800 group-hover:text-gray-900">
-          {mechanic.name}
-        </h3>
-        <span class={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${getDifficultyColor(mechanic.difficulty)}`}>
-          {capitalize(mechanic.difficulty)}
-        </span>
+      <div class="flex-1">
+        <div class="flex items-center gap-3 flex-wrap">
+          <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">
+            {mechanic.name}
+          </h3>
+          <span class={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getDifficultyColor(mechanic.difficulty)}`}>
+            {capitalize(mechanic.difficulty)}
+          </span>
+        </div>
       </div>
     </div>
   </div>
   
-  <p class="text-gray-600 mb-4">
-    {mechanic.description}
-  </p>
+  <!-- Descripción principal -->
+  <div class="mb-6">
+    <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+      {mechanic.description}
+    </p>
+  </div>
   
+  <!-- Detalles adicionales -->
   {mechanic.details && (
-    <div class={`space-y-3 text-sm border-t pt-4 mt-4 ${color.border}`}>
+    <div class={`
+      space-y-4 text-sm border-t pt-6 mt-6 
+      ${color.border} ${color.borderDark}
+    `}>
       {mechanic.details.mecanica && (
         <div>
-          <span class="font-semibold text-gray-700">Mecánica:</span>
-          <p class="text-gray-600 mt-1">{mechanic.details.mecanica}</p>
+          <div class="flex items-center gap-2 mb-2">
+            <div class={`w-2 h-2 rounded-full ${color.text} ${color.textDark}`}></div>
+            <span class="font-semibold text-gray-800 dark:text-gray-300">
+              Mecánica
+            </span>
+          </div>
+          <p class="text-gray-600 dark:text-gray-400 pl-4">
+            {mechanic.details.mecanica}
+          </p>
         </div>
       )}
+      
       {mechanic.details.objetivo && (
         <div>
-          <span class="font-semibold text-gray-700">Objetivo:</span>
-          <p class="text-gray-600 mt-1">{mechanic.details.objetivo}</p>
+          <div class="flex items-center gap-2 mb-2">
+            <div class={`w-2 h-2 rounded-full ${color.text} ${color.textDark}`}></div>
+            <span class="font-semibold text-gray-800 dark:text-gray-300">
+              Objetivo
+            </span>
+          </div>
+          <p class="text-gray-600 dark:text-gray-400 pl-4">
+            {mechanic.details.objetivo}
+          </p>
         </div>
       )}
+      
       {mechanic.details.rol && (
         <div>
-          <span class="font-semibold text-gray-700">Rol:</span>
-          <p class="text-gray-600 mt-1">{mechanic.details.rol}</p>
+          <div class="flex items-center gap-2 mb-2">
+            <div class={`w-2 h-2 rounded-full ${color.text} ${color.textDark}`}></div>
+            <span class="font-semibold text-gray-800 dark:text-gray-300">
+              Rol principal
+            </span>
+          </div>
+          <p class="text-gray-600 dark:text-gray-400 pl-4">
+            {mechanic.details.rol}
+          </p>
         </div>
       )}
+      
       {mechanic.details.efecto && (
         <div>
-          <span class="font-semibold text-gray-700">Efecto:</span>
-          <p class="text-gray-600 mt-1">{mechanic.details.efecto}</p>
+          <div class="flex items-center gap-2 mb-2">
+            <div class={`w-2 h-2 rounded-full ${color.text} ${color.textDark}`}></div>
+            <span class="font-semibold text-gray-800 dark:text-gray-300">
+              Efecto en el juego
+            </span>
+          </div>
+          <p class="text-gray-600 dark:text-gray-400 pl-4">
+            {mechanic.details.efecto}
+          </p>
         </div>
       )}
+      
       {mechanic.details.porQueFunciona && (
         <div>
-          <span class="font-semibold text-gray-700">¿Por qué funciona?:</span>
-          <p class="text-gray-600 mt-1">{mechanic.details.porQueFunciona}</p>
+          <div class="flex items-center gap-2 mb-2">
+            <div class={`w-2 h-2 rounded-full ${color.text} ${color.textDark}`}></div>
+            <span class="font-semibold text-gray-800 dark:text-gray-300">
+              ¿Por qué funciona?
+            </span>
+          </div>
+          <p class="text-gray-600 dark:text-gray-400 pl-4">
+            {mechanic.details.porQueFunciona}
+          </p>
         </div>
       )}
     </div>
   )}
 </div>
+
+<style>
+  /* Transiciones suaves para modo oscuro */
+  .card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .card:hover {
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dark .card:hover {
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Efecto de elevación */
+  .card {
+    transform: translateY(0);
+  }
+  
+  .card:hover {
+    transform: translateY(-4px);
+  }
+</style>
