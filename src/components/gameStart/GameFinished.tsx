@@ -107,16 +107,11 @@ export default function GameFinished({
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <div className="text-7xl mb-4 animate-bounce">
-            {ganaronTripulantes ? '🏆' : '😈'}
+            🏆
           </div>
           <h1 className={`text-4xl font-bold mb-4 ${ganaronTripulantes ? 'text-green-400' : 'text-red-400'}`}>
             {ganaronTripulantes ? '¡TRIPULANTES GANAN!' : '¡IMPOSTORES GANAN!'}
           </h1>
-          <p className="text-gray-400 text-lg">{message}</p>
-          <div className="inline-flex items-center bg-gray-800/50 px-4 py-2 rounded-full mt-3">
-            <span className="text-gray-400">Ronda final:</span>
-            <span className="text-white font-bold ml-2 text-xl">{round}</span>
-          </div>
         </div>
         
         <div className="bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 border border-gray-700 mb-6">
@@ -126,20 +121,15 @@ export default function GameFinished({
           
           <div className="space-y-5">
             {/* Resumen general */}
-            <div className="bg-gray-900/60 p-5 rounded-xl">
-              <h3 className="text-lg font-semibold text-blue-400 mb-3 flex items-center gap-2">
-                📈 Resumen General
-              </h3>
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gray-800/40 p-4 rounded-lg">
+                <div className="bg-gray-900/60 p-4 rounded-lg">
                   <p className="text-gray-400 text-sm mb-1">Jugadores Totales</p>
                   <p className="text-3xl font-bold text-white">{jugadoresTotales}</p>
                 </div>
-                <div className="bg-gray-800/40 p-4 rounded-lg">
+                <div className="bg-gray-900/60 p-4 rounded-lg">
                   <p className="text-gray-400 text-sm mb-1">Jugadores Activos</p>
                   <p className="text-3xl font-bold text-green-400">{jugadoresActivos}</p>
                 </div>
-              </div>
             </div>
             
             {/* Palabras de la ronda final */}

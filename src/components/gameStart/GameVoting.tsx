@@ -24,7 +24,7 @@ export default function GameVoting({
         <div className="bg-gray-800 rounded-xl p-6 shadow-2xl border border-gray-700 mb-6">
           <h2 className="text-2xl font-bold text-white mb-6">Selecciona al jugador a eliminar:</h2>
           
-          <div className="space-y-3">
+          <div className="space-y-3 overflow-y-auto overflow-x-hidden max-h-96">
             {jugadoresActivos.map((jugador) => (
               <button
                 key={jugador}
