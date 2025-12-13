@@ -4,7 +4,7 @@
   "roles": [
     {
       "id": "persona-normal",
-      "name": "Persona Normal",
+      "name": "Ciudadano",
       "team": "Ciudadanos",
       "description": "Tu objetivo es descubrir al impostor. Tienes información completa y debes analizar cada respuesta.",
       "ability": "Voto doble en rondas finales",
@@ -34,10 +34,10 @@
     },
     {
       "id": "periodista",
-      "name": "Periodista",
+      "name": "Peronista",
       "team": "Ciudadanos",
       "description": "En lugar de decir una palabra relacionada, este jugador tiene el deber de hacer una pregunta a otro jugador.",
-      "ability": "Pregunta adicional por ronda",
+      "ability": "Pregunta adicional por partida",
       "icon": "file-text",
       "color": "purple",
       "teamColor": "green"
@@ -51,16 +51,6 @@
       "icon": "heart",
       "color": "pink",
       "teamColor": "green"
-    },
-    {
-      "id": "asesino",
-      "name": "Asesino (Sniper)",
-      "team": "Impostores",
-      "description": "Es un Impostor que tiene una habilidad especial: Si adivina quién tiene un rol específico durante la partida, gana automáticamente.",
-      "ability": "Adivinar rol específico para ganar",
-      "icon": "target",
-      "color": "orange",
-      "teamColor": "red"
     }
   ]
 }
