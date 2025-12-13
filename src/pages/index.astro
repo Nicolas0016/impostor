@@ -130,22 +130,39 @@ import rolesData from '../data/roles.json';
 </section>
   
   <!-- CTA Section -->
-  <section class="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
-    <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
-        ¿Listo para jugar?
-      </h2>
-      <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-        Únete a miles de jugadores y descubre al impostor entre vosotros
+<section class="py-24 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-700 dark:via-purple-800 dark:to-gray-900">
+  <!-- Efectos de fondo -->
+  <div class="absolute inset-0 overflow-hidden">
+    <div class="absolute -top-40 -right-40 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-400/20 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+  </div>
+  
+  <div class="container relative mx-auto px-4 text-center">
+    
+    
+    <!-- Título principal -->
+    <h2 class="text-3xl md:text-6xl font-bold text-white mb-6 leading-tight">
+      ¿Listo para<br/>
+      <span class="bg-gradient-to-r from-yellow-300 via-pink-300 to-cyan-300 bg-clip-text text-transparent">
+        descubrir al impostor?
+      </span>
+    </h2>
+    
+    <!-- Subtítulo -->
+    <p class="text-xl text-blue-100 dark:text-blue-200 mb-10 max-w-3xl mx-auto leading-relaxed">
+      Unite a miles de jugadores en esta aventura social donde la astucia y la deducción son tus mejores armas.
+    </p>
+    
+    
+    <!-- Llamada adicional -->
+    <div class="mt-16 pt-8 border-t border-white/20">
+      <p class="text-blue-200 dark:text-blue-300 text-sm max-w-2xl mx-auto">
+        No necesitás descargar nada. Jugá directamente desde tu navegador con amigos y familiares.
       </p>
-      <a 
-        href="/jugar" 
-        class="inline-block btn bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
-      >
-        ¡Jugar Gratis Ahora!
-      </a>
     </div>
-  </section>
+  </div>
+</section>
 </Layout>
 
 <!-- Script para manejar todos los botones de "Comenzar Partida" -->
