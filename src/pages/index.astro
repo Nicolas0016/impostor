@@ -29,46 +29,105 @@ import rolesData from '../data/roles.json';
   />
   
   <!-- Mechanics Section -->
-  <section id="mechanics" class="py-20 bg-white">
-    <div class="container mx-auto px-4">
-      <h2 class="section-title">{mechanicsData.title}</h2>
-      <p class="section-subtitle">{mechanicsData.subtitle}</p>
+<section id="mechanics" class="py-20 bg-white bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+  <div class="container mx-auto px-4">
+    <!-- Header mejorado con diseño visual -->
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      <div class="inline-flex items-center justify-center gap-3 mb-6">
+        <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-700 rounded-2xl flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <h2 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+          {mechanicsData.title}
+        </h2>
+      </div>
       
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {mechanicsData.mechanics.map(mechanic => (
-          <MechanicCard mechanic={mechanic} />
-        ))}
+      <p class="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
+        {mechanicsData.subtitle}
+      </p>
+      
+      <!-- Línea decorativa -->
+      <div class="mt-8 flex justify-center">
+        <div class="w-24 h-1 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400 dark:from-blue-500 dark:via-purple-600 dark:to-pink-500 rounded-full"></div>
       </div>
     </div>
-  </section>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {mechanicsData.mechanics.map(mechanic => (
+        <MechanicCard mechanic={mechanic} />
+      ))}
+    </div>
+  </div>
+</section>
   
-  <!-- Roles Section -->
-  <section id="roles" class="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
-    <div class="container mx-auto px-4">
-      <h2 class="section-title">{rolesData.title}</h2>
-      <p class="section-subtitle">{rolesData.subtitle}</p>
+ <!-- Roles Section -->
+<section id="roles" class="py-20 bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800">
+  <div class="container mx-auto px-4">
+    <!-- Header mejorado -->
+    <div class="text-center max-w-4xl mx-auto mb-16">
+      <div class="inline-flex items-center gap-3 mb-6">
+        <h2 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+          {rolesData.title}
+        </h2>
+      </div>
       
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {rolesData.roles.map(role => (
-          <RoleCard role={role} />
-        ))}
+      <p class="text-xl text-gray-600 dark:text-gray-300 leading-relaxed mb-10">
+        {rolesData.subtitle}
+      </p>
+      
+      <!-- Líneas decorativas -->
+      <div class="mt-8 flex justify-center">
+        <div class="w-24 h-1 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400 dark:from-blue-500 dark:via-purple-600 dark:to-pink-500 rounded-full"></div>
       </div>
     </div>
-  </section>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {rolesData.roles.map(role => (
+        <RoleCard role={role} />
+      ))}
+    </div>
+    
+  </div>
+</section>
   
   <!-- Restrictions Section -->
-  <section id="restrictions" class="py-20 bg-white">
-    <div class="container mx-auto px-4">
-      <h2 class="section-title">{restrictionsData.title}</h2>
-      <p class="section-subtitle">{restrictionsData.subtitle}</p>
+<section id="restrictions" class="py-20 bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+  <div class="container mx-auto px-4">
+    <!-- Header mejorado -->
+    <div class="text-center max-w-4xl mx-auto mb-16">
+      <div class="inline-flex items-center gap-3 mb-6">
+        <h2 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+          {restrictionsData.title}
+        </h2>
+      </div>
       
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        {restrictionsData.restrictions.map(restriction => (
-          <RestrictionCard restriction={restriction} />
-        ))}
+      <p class="text-xl text-gray-600 dark:text-gray-300 leading-relaxed mb-10">
+        {restrictionsData.subtitle}
+      </p>
+      
+      <!-- Líneas decorativas -->
+      <div class="mt-8 flex justify-center">
+        <div class="w-24 h-1 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400 dark:from-blue-500 dark:via-purple-600 dark:to-pink-500 rounded-full"></div>
       </div>
     </div>
-  </section>
+    
+    <!-- Grid de tarjetas -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+      {restrictionsData.restrictions.map((restriction, index) => (
+        <div class={`
+          transform transition-all duration-500
+          ${index % 3 === 1 ? 'md:translate-y-4' : ''}
+          ${index % 3 === 2 ? 'lg:translate-y-8' : ''}
+        `}>
+          <RestrictionCard restriction={restriction} />
+        </div>
+      ))}
+    </div>
+    
+  </div>
+</section>
   
   <!-- CTA Section -->
   <section class="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
