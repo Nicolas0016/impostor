@@ -108,14 +108,6 @@ export default function PlayerSelector() {
 
       {/* Lista de nombres de jugadores */}
       <div class="mb-10">
-        <div class="flex items-center justify-between mb-4">
-          <span class="text-lg font-medium text-gray-700">
-            Jugadores ({validPlayers} de 15)
-          </span>
-          <span class="text-sm text-gray-500">
-            Mínimo: 3, Recomendado: 6-8, Máximo: 15
-          </span>
-        </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           {playerNames.map((name, index) => (
@@ -139,10 +131,6 @@ export default function PlayerSelector() {
           ))}
         </div>
 
-        <div class="text-sm text-gray-500 mb-2">
-          <p class="mb-1">• Escribe nombres para agregar más jugadores automáticamente</p>
-          <p>• Borra un nombre para eliminar jugadores (mínimo 3)</p>
-        </div>
       </div>
 
       {/* Selector de impostores (dinámico según jugadores) */}
@@ -150,10 +138,6 @@ export default function PlayerSelector() {
         <h3 class="text-lg font-semibold text-gray-800 mb-4">
           Límite de impostores
         </h3>
-        <p class="text-gray-600 mb-4 text-sm">
-          Según la cantidad de jugadores ({validPlayers}), puedes tener:
-        </p>
-
         <div class="grid grid-cols-3 gap-4">
           {availableImpostorOptions.includes(1) && (
             <button
