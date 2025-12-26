@@ -46,7 +46,7 @@ export default function InsertGames() {
   const [currentPlayer, setCurrentPlayer] = useState<string>('');
   const [playerInfo, setPlayerInfo] = useState<PlayerInfo | null>(null);
   const [gameState, setGameState] = useState<'config' | 'ready' | 'playing' | 'voting' | 'finished'>('config');
-  const [round, setRound] = useState<number>(game?.round || 3);
+  const [round, setRound] = useState<number>(game?.round || 0);
   const [message, setMessage] = useState<string>('Juego listo para comenzar');
   const [showRole, setShowRole] = useState<boolean>(false);
   const [eliminatedPlayers, setEliminatedPlayers] = useState<string[]>([]);

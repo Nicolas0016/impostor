@@ -64,26 +64,42 @@ export default function GamePlaying({
             </button>
           ) : (
             <div className="space-y-6 animate-fadeIn">
-              {/* Información del rol */}
               {playerInfo?.role === 'impostor' ? (
-                <div className="space-y-4">
-                  <div className="p-6 rounded-xl bg-gradient-to-br from-red-900/60 to-red-800/40 border-2 border-red-500/50 shadow-lg">
-                    <div className="text-3xl font-bold text-red-300 font-mono tracking-wider mb-2">
-                      IMPOSTOR
-                    </div>
-                    <div className="text-lg text-red-200">
-                      {esImpostorConPalabraRelacionada ? playerInfo?.word : "Tu misión es no ser descubierto"}
-                    </div>
+  <div className="space-y-4">
+    <div className="p-6 rounded-xl bg-gradient-to-br from-red-900/60 to-red-800/40 border-2 border-red-500/50 shadow-lg">
+      <div className="text-3xl font-bold text-red-300 font-mono tracking-wider ">
+        {esImpostorConPalabraRelacionada ? roundInfo?.palabraImpostor : 'IMPOSTOR'}
+        
+      </div>
+    </div>
+      {/* MOSTRAR COMPAÑEROS IMPOSTORES - NUEVO */}
+      {roundInfo?.roundImpostors && roundInfo.roundImpostors.length > 0 && (
+        <div className='flex gap-2'>
+          
+          {roundInfo.roundImpostors.length > 1 && (
+            <div className="flex flex-wrap gap-2">
+              {roundInfo.roundImpostors
+                .filter(impostor => impostor !== currentPlayer)
+                .map((impostor, index) => (
+                  <div 
+                    key={index}
+                    className="px-3 py-1 bg-red-700/50 text-red-200 rounded-full text-sm font-medium"
+                  >
+                    {impostor}
                   </div>
-                </div>
-                  ):  (
+                ))
+              }
+            </div>
+          )}
+        </div>
+      )}
+  </div>
+) :  (
                 /* Información para TRIPULANTE */
                 <div className="space-y-4">
                   {/* Palabra secreta */}
                   <div className="p-6 bg-gradient-to-br from-gray-800/60 to-gray-900/40 backdrop-blur-sm rounded-xl border border-gray-700 shadow-lg">
-                    <div className="text-sm text-gray-400 uppercase tracking-wider mb-2">
-                      Palabra secreta de la ronda
-                    </div>
+                    
                     <div className="text-3xl font-bold text-white font-mono tracking-wider">
                       {playerInfo?.word || roundInfo?.palabraTripulante || game.secretWord}
                     </div>

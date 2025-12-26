@@ -53,7 +53,7 @@ export default class ImpostorGame {
         this.selectedCategories = categories;
         
         // Estado inicial
-        this.round = 3; // Cambié de 3 a 0 para empezar desde ronda 0
+        this.round = 0; // Cambié de 3 a 0 para empezar desde ronda 0
         this.currentPlayerIndex = 0;
         this.turnOrder = [];
         this.secretWord = '';
@@ -391,29 +391,50 @@ export default class ImpostorGame {
         });
     }
     
-    // Genera un orden aleatorio pero secuencial para los turnos
-    private generarOrdenTurnos(): number[] {
-        // Generar un índice aleatorio para empezar
-        const startIndex = Math.floor(Math.random() * this.players.length);
-        
-        // Crear array de índices [0, 1, 2, ..., n-1]
-        const indices = Array.from({ length: this.players.length }, (_, i) => i);
-        
-        // Reorganizar para empezar desde startIndex y seguir en orden
+    // En la clase ImpostorGame, modifica el método generarOrdenTurnos:
+
+// Genera un orden aleatorio pero secuencial para los turnos
+private generarOrdenTurnos(): number[] {
+    // Decidir aleatoriamente si será orden ascendente o descendente
+    const ordenAscendente = Math.random() > 0.5;
+    
+    // Generar un índice aleatorio para empezar
+    const startIndex = Math.floor(Math.random() * this.players.length);
+    
+    if (ordenAscendente) {
+        // Orden ascendente: startIndex, startIndex+1, ..., n-1, 0, 1, ..., startIndex-1
+        console.log(`Orden ascendente empezando desde: ${this.players[startIndex]}`);
         const turnOrder = [];
         for (let i = 0; i < this.players.length; i++) {
             const index = (startIndex + i) % this.players.length;
             turnOrder.push(index);
         }
-        
+        return turnOrder;
+    } else {
+        // Orden descendente: startIndex, startIndex-1, ..., 0, n-1, n-2, ..., startIndex+1
+        console.log(`Orden descendente empezando desde: ${this.players[startIndex]}`);
+        const turnOrder = [];
+        for (let i = 0; i < this.players.length; i++) {
+            // Para descendente: sumar -i y usar módulo para manejar números negativos
+            const index = (startIndex - i + this.players.length) % this.players.length;
+            turnOrder.push(index);
+        }
         return turnOrder;
     }
+}
+
+// También modifica el método getCurrentTurnOrder para mayor claridad:
+getCurrentTurnOrder(): string[] {
+    const order = this.turnOrder.map(index => this.players[index]);
     
-    // Obtiene los nombres en el orden actual de turnos
-    getCurrentTurnOrder(): string[] {
-        return this.turnOrder.map(index => this.players[index]);
-    }
+    // Determinar si el orden es ascendente o descendente para logging
+    const isAscending = this.turnOrder.length > 1 && 
+                       ((this.turnOrder[1] - this.turnOrder[0] + this.players.length) % this.players.length === 1);
     
+    console.log(`Orden de turnos (${isAscending ? 'ASCENDENTE' : 'DESCENDENTE'}): ${order.join(' → ')}`);
+    
+    return order;
+}
     // Mueve al siguiente turno
     pasarTurno(): {
         nextPlayer: string | null,
