@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
 import ImpostorGame from "../../models/Impostor";
-import ConfirmModal from './ConfirmModal';
 import GameConfig from './GameConfig';
 import GameFinished from './GameFinished';
 import GamePlaying from './GamePlaying';
@@ -33,7 +32,7 @@ interface GameConfigData {
   selectedRestrictions?: string[];
   restrictionsEnabled?: boolean;
   playerNames?: string[];
-  selectedCategories?: string[]; // IDs de categorías seleccionadas
+  selectedCategories?: string[];
 }
 
 export default function InsertGames() {
@@ -50,28 +49,27 @@ export default function InsertGames() {
   const [message, setMessage] = useState<string>('Juego listo para comenzar');
   const [showRole, setShowRole] = useState<boolean>(false);
   const [eliminatedPlayers, setEliminatedPlayers] = useState<string[]>([]);
-  const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
-  const [playerToEliminate, setPlayerToEliminate] = useState<string | null>(null);
   const [roundInfo, setRoundInfo] = useState<{
     category?: string;
     palabraTripulante: string;
     palabraImpostor: string;
-    roundImpostors?: string[]; // Nuevo: impostores de esta ronda
+    roundImpostors?: string[];
   }>({
     palabraTripulante: '',
     palabraImpostor: ''
   });
   
-  // Nuevos estados para funcionalidades adicionales
-  const [showImpostorsModal, setShowImpostorsModal] = useState<boolean>(false);
-  const [currentImpostorsInfo, setCurrentImpostorsInfo] = useState<{
-    round: number;
-    impostors: string[];
-    count: number;
-    palabraTripulante: string;
-    palabraImpostor: string;
-    category?: string;
-  } | null>(null);
+  // Estados para el componente GameVoting
+  const [playerToEliminate, setPlayerToEliminate] = useState<string | null>(null);
+  const [votingResult, setVotingResult] = useState<{
+    eliminatedPlayer: string | null;
+    isImpostor: boolean;
+  }>({
+    eliminatedPlayer: null,
+    isImpostor: false
+  });
+  
+  // Historial de impostores
   const [allImpostorsHistory, setAllImpostorsHistory] = useState<Array<{
     round: number;
     impostors: string[];
@@ -79,7 +77,7 @@ export default function InsertGames() {
     palabraImpostor: string;
     category?: string;
   }>>([]);
-  
+
   // Cargar configuración desde localStorage
   useEffect(() => {
     const loadGameConfig = () => {
@@ -152,10 +150,6 @@ export default function InsertGames() {
             config.selectedCategories?.includes(category.id)
           );
           console.log(`Categorías seleccionadas: ${categoriesToUse.length} de ${allCategories.length}`);
-          console.log('IDs seleccionados:', config.selectedCategories);
-          console.log('Categorías encontradas:', categoriesToUse.map(c => ({id: c.id, name: c.name})));
-        } else {
-          console.log('No hay categorías seleccionadas, se usarán palabras aleatorias');
         }
 
         // Crear el juego con la configuración cargada
@@ -211,8 +205,9 @@ export default function InsertGames() {
     setMessage(resultado.message);
     setGameState('playing');
     setShowRole(false);
+    setVotingResult({ eliminatedPlayer: null, isImpostor: false });
     
-    // Guardar información de la ronda (incluyendo impostores)
+    // Guardar información de la ronda
     setRoundInfo({
       category: resultado.category,
       palabraTripulante: resultado.palabraTripulante,
@@ -220,11 +215,8 @@ export default function InsertGames() {
       roundImpostors: resultado.roundImpostors
     });
     
-    // Guardar info de impostores para consulta posterior
-    const impostorsInfo = game.obtenerImpostoresRonda();
-    setCurrentImpostorsInfo(impostorsInfo);
-    
     // Actualizar historial de impostores
+    const impostorsInfo = game.obtenerImpostoresRonda();
     setAllImpostorsHistory(prev => [...prev, impostorsInfo]);
     
     const info = game.obtenerInfoJugadorActual();
@@ -237,25 +229,6 @@ export default function InsertGames() {
     console.log(`Palabra tripulantes: ${resultado.palabraTripulante}`);
     console.log(`Palabra impostor: ${resultado.palabraImpostor}`);
     console.log(`Impostores: ${resultado.roundImpostors?.join(', ') || 'Ninguno'}`);
-    
-    // Mostrar información especial para impostores con palabra relacionada
-    if (resultado.palabraImpostor !== 'IMPOSTOR') {
-      console.log(`⚠️ IMPORTANTE: Los impostores tienen palabra relacionada "${resultado.palabraImpostor}"`);
-    }
-    
-    // Debug: mostrar estado del juego
-    const estado = game.obtenerEstadoCompleto();
-    console.log('Debug estado juego:', {
-      round: estado.round,
-      categories: estado.categories.map(c => ({
-        name: c.name,
-        type: c.type,
-        words: c.words.length,
-        pairs: c.pairs?.length || 0
-      })),
-      totalWords: estado.totalWordsAvailable,
-      impostorsStored: estado.storedImpostors
-    });
   }
   
   function pasarTurno(): void {
@@ -265,8 +238,10 @@ export default function InsertGames() {
     setShowRole(false);
     
     if (resultado.isRoundComplete) {
-      setMessage('¡Ronda completada! Todos han visto sus roles.');
-      setGameState('voting');
+      setMessage('¡Ronda completada! Todos han visto sus roles. Iniciando votación...');
+      setTimeout(() => {
+        setGameState('voting');
+      }, 1500);
     } else {
       const info = game.obtenerInfoJugadorActual();
       setCurrentPlayer(info.player);
@@ -279,22 +254,20 @@ export default function InsertGames() {
     setShowRole(true);
   }
   
-  function confirmarEliminacion(jugador: string): void {
-    setPlayerToEliminate(jugador);
-    setShowConfirmModal(true);
-  }
-  
-  function eliminarJugador(): void {
-    if (!game || !playerToEliminate) return;
+  // Función para manejar la eliminación desde GameVoting
+  function handleConfirmElimination(jugador: string): void {
+    if (!game) return;
     
-    const resultado = game.sacarAAlguien(playerToEliminate);
+    const resultado = game.sacarAAlguien(jugador);
     
     // Actualizar lista de eliminados
-    setEliminatedPlayers(prev => [...prev, playerToEliminate]);
+    setEliminatedPlayers(prev => [...prev, jugador]);
     
-    // Cerrar modal
-    setShowConfirmModal(false);
-    setPlayerToEliminate(null);
+    // Guardar resultado para mostrar en GameVoting
+    setVotingResult({
+      eliminatedPlayer: jugador,
+      isImpostor: resultado.wasImpostor
+    });
     
     // Verificar victoria
     if (resultado.gameResult) {
@@ -305,16 +278,12 @@ export default function InsertGames() {
       }
       setGameState('finished');
     } else {
-      // Si no hay victoria, mantenerse en estado 'voting' para seguir eliminando
-      const eraImpostor = resultado.wasImpostor;
-      setMessage(`${playerToEliminate} ha sido eliminado. ${eraImpostor ? '¡Era impostor!' : 'No era impostor.'} Sigan votando.`);
-      setGameState('voting');
+      // Si no hay victoria, mostrar resultado de eliminación
+      setMessage(`${jugador} ha sido eliminado. ${resultado.wasImpostor ? '¡Era impostor!' : 'No era impostor.'}`);
+      
+      // Permanecer en estado 'voting' para seguir votando
+      // GameVoting mostrará el resultado y permitirá continuar
     }
-  }
-  
-  function cancelarEliminacion(): void {
-    setShowConfirmModal(false);
-    setPlayerToEliminate(null);
   }
   
   function iniciarNuevaRonda(): void {
@@ -325,6 +294,7 @@ export default function InsertGames() {
     setMessage(resultado.message);
     setGameState('playing');
     setShowRole(false);
+    setVotingResult({ eliminatedPlayer: null, isImpostor: false });
     
     // Actualizar información de la ronda
     setRoundInfo({
@@ -334,11 +304,8 @@ export default function InsertGames() {
       roundImpostors: resultado.roundImpostors
     });
     
-    // Guardar info de impostores para consulta posterior
-    const impostorsInfo = game.obtenerImpostoresRonda();
-    setCurrentImpostorsInfo(impostorsInfo);
-    
     // Actualizar historial de impostores
+    const impostorsInfo = game.obtenerImpostoresRonda();
     setAllImpostorsHistory(prev => [...prev, impostorsInfo]);
     
     const info = game.obtenerInfoJugadorActual();
@@ -347,7 +314,6 @@ export default function InsertGames() {
     setEliminatedPlayers([]);
     
     console.log(`Nueva ronda ${game.round}: ${resultado.category || 'Aleatoria'}`);
-    console.log(`Impostores: ${resultado.roundImpostors?.join(', ') || 'Ninguno'}`);
   }
   
   function reiniciarJuegoCompleto(): void {
@@ -361,15 +327,12 @@ export default function InsertGames() {
     setMessage('Juego listo para comenzar');
     setShowRole(false);
     setEliminatedPlayers([]);
-    setShowConfirmModal(false);
-    setPlayerToEliminate(null);
+    setVotingResult({ eliminatedPlayer: null, isImpostor: false });
     setRoundInfo({
       palabraTripulante: '',
       palabraImpostor: ''
     });
-    setCurrentImpostorsInfo(null);
     setAllImpostorsHistory([]);
-    setShowImpostorsModal(false);
     
     // Recargar configuración desde localStorage
     const savedConfig = localStorage.getItem('impostorGameConfig');
@@ -421,29 +384,19 @@ export default function InsertGames() {
     }
   }
   
-  // Función para mostrar información de impostores actual
-  function mostrarImpostoresActuales(): void {
-    if (!game) return;
-    
-    const impostorsInfo = game.obtenerImpostoresRonda();
-    setCurrentImpostorsInfo(impostorsInfo);
-    setShowImpostorsModal(true);
+  // Función para reiniciar votación (después de mostrar resultados)
+  function reiniciarVotacion(): void {
+    setVotingResult({ eliminatedPlayer: null, isImpostor: false });
+    setMessage('Continuando votación...');
+    // El estado sigue siendo 'voting', solo se limpia el resultado
   }
   
-  // Función para obtener información de impostor específico
-  function obtenerInfoImpostorEspecifico(jugador: string) {
-    if (!game) return null;
-    
-    return game.obtenerInfoImpostorSiEs(jugador);
-  }
-  
-  // Función para obtener todos los impostores (historial)
-  function obtenerTodosLosImpostores() {
-    if (!game) return [];
-    
-    // Usar el método del juego o nuestro historial local
-    const fromGame = game.obtenerTodosLosImpostores();
-    return fromGame.length > 0 ? fromGame : allImpostorsHistory;
+  // Función para continuar después de mostrar resultados de eliminación
+  function continuarDespuesDeEliminacion(): void {
+    if (votingResult.eliminatedPlayer) {
+      // Si eliminamos a alguien, reiniciamos la votación para continuar
+      reiniciarVotacion();
+    }
   }
   
   // Estado de carga
@@ -531,114 +484,6 @@ export default function InsertGames() {
   const estado = game.obtenerEstadoCompleto();
   const jugadoresActivos = estado.players.filter(j => !eliminatedPlayers.includes(j));
   
-  // Modal de confirmación de eliminación
-  if (showConfirmModal && playerToEliminate) {
-    return (
-      <ConfirmModal
-        playerToEliminate={playerToEliminate}
-        onCancel={cancelarEliminacion}
-        onConfirm={eliminarJugador}
-      />
-    );
-  }
-  
-  // Modal de información de impostores
-  if (showImpostorsModal && currentImpostorsInfo) {
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-        <div className="bg-gray-800 rounded-xl p-6 shadow-2xl border border-red-700/50 max-w-md w-full">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-bold text-white">👥 Impostores en Ronda {currentImpostorsInfo.round}</h3>
-            <button
-              onClick={() => setShowImpostorsModal(false)}
-              className="text-gray-400 hover:text-white"
-            >
-              ✕
-            </button>
-          </div>
-          
-          <div className="space-y-4">
-            <div className="bg-gray-900/50 p-4 rounded-lg">
-              <h4 className="text-lg font-bold text-red-400 mb-2">Información de la Ronda:</h4>
-              <p className="text-gray-300">
-                <span className="font-bold">Categoría:</span> {currentImpostorsInfo.category || 'Aleatoria'}
-              </p>
-              <p className="text-gray-300">
-                <span className="font-bold">Palabra Tripulantes:</span> "{currentImpostorsInfo.palabraTripulante}"
-              </p>
-              <p className="text-gray-300">
-                <span className="font-bold">Palabra Impostor:</span> "{currentImpostorsInfo.palabraImpostor}"
-              </p>
-            </div>
-            
-            <div className="bg-gray-900/50 p-4 rounded-lg">
-              <h4 className="text-lg font-bold text-red-400 mb-2">Impostores ({currentImpostorsInfo.count}):</h4>
-              {currentImpostorsInfo.impostors.length > 0 ? (
-                <ul className="space-y-2">
-                  {currentImpostorsInfo.impostors.map(impostor => {
-                    const infoImpostor = obtenerInfoImpostorEspecifico(impostor);
-                    return (
-                      <li key={impostor} className="flex items-center justify-between p-2 bg-gray-800 rounded">
-                        <span className="text-white font-medium">{impostor}</span>
-                        <span className="text-red-400 font-bold">IMPOSTOR</span>
-                        {infoImpostor?.info && currentImpostorsInfo.palabraImpostor !== 'IMPOSTOR' && (
-                          <div className="text-sm text-yellow-300 mt-1 text-right">
-                            Palabra: "{infoImpostor.info.palabraImpostor}"
-                          </div>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              ) : (
-                <p className="text-gray-400">No hay impostores en esta ronda.</p>
-              )}
-            </div>
-            
-            {currentImpostorsInfo.palabraImpostor !== 'IMPOSTOR' && (
-              <div className="bg-yellow-900/30 p-4 rounded-lg border border-yellow-700/50">
-                <h4 className="text-lg font-bold text-yellow-400 mb-2">⚠️ Información Especial</h4>
-                <p className="text-yellow-300">
-                  En esta ronda los impostores tienen una palabra relacionada:
-                  <span className="font-bold block mt-1">"{currentImpostorsInfo.palabraImpostor}"</span>
-                </p>
-                <p className="text-yellow-300 text-sm mt-2">
-                  (Los tripulantes ven: "{currentImpostorsInfo.palabraTripulante}")
-                </p>
-              </div>
-            )}
-            
-            <div className="bg-gray-900/50 p-4 rounded-lg">
-              <h4 className="text-lg font-bold text-blue-400 mb-2">Historial de Impostores:</h4>
-              <div className="space-y-2 max-h-40 overflow-y-auto">
-                {obtenerTodosLosImpostores().map((item, index) => (
-                  <div key={index} className="p-2 bg-gray-800 rounded">
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">Ronda {item.round}</span>
-                      <span className="text-red-400 font-bold">{item.impostors.length} impostor(es)</span>
-                    </div>
-                    <div className="text-sm text-gray-400">
-                      {item.impostors.join(', ')}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-6 flex justify-end">
-            <button
-              onClick={() => setShowImpostorsModal(false)}
-              className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-lg transition-all duration-300"
-            >
-              Cerrar
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  
   // Renderizado condicional según estado del juego
   switch (gameState) {
     case 'config':
@@ -650,7 +495,6 @@ export default function InsertGames() {
           eliminatedPlayers={eliminatedPlayers}
           estado={estado}
           onStartRound={comenzarRonda}
-          onShowImpostors={mostrarImpostoresActuales}
           roundInfo={roundInfo}
         />
       );
@@ -676,9 +520,10 @@ export default function InsertGames() {
           message={message}
           jugadoresActivos={jugadoresActivos}
           eliminatedPlayers={eliminatedPlayers}
-          onConfirmElimination={confirmarEliminacion}
-          onShowImpostors={mostrarImpostoresActuales}
-          roundInfo={roundInfo}
+          onConfirmElimination={handleConfirmElimination}
+          currentVoter={jugadoresActivos[0]} // Primer jugador activo comienza votando
+          votingResult={votingResult}
+          onContinueAfterResult={continuarDespuesDeEliminacion}
         />
       );
       
@@ -694,7 +539,6 @@ export default function InsertGames() {
           eliminatedPlayers={eliminatedPlayers}
           onNewRound={iniciarNuevaRonda}
           onRestart={reiniciarJuegoCompleto}
-          onShowImpostors={mostrarImpostoresActuales}
           allImpostorsHistory={allImpostorsHistory}
         />
       );

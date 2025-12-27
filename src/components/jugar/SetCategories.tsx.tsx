@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'preact/hooks';
+import defaultCategories from '../../data/defaultCategories.json';
 
 interface Category {
   id: string;
   name: string;
   type: 'single' | 'mixed';
   words: string[];
-  pairs?: Array<{word: string, related: string}>;
+  pairs?: Array<{ word: string, related: string }>;
   createdAt: string;
   lastUsed: string;
   count: number;
@@ -24,98 +25,7 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
 
-  // Categorías por defecto (siempre disponibles)
-  const defaultCategories: Category[] = [
-    {
-      id: 'default_foods',
-      name: 'Comidas y Bebidas',
-      type: 'mixed',
-      words: ['pizza', 'hamburguesa', 'ensalada', 'sushi', 'helado', 'café', 'té', 'agua', 'refresco', 'vino'],
-      pairs: [
-        { word: 'pizza', related: 'queso' },
-        { word: 'hamburguesa', related: 'pan' },
-        { word: 'ensalada', related: 'lechuga' },
-        { word: 'sushi', related: 'pescado' },
-        { word: 'helado', related: 'chocolate' },
-        { word: 'café', related: 'leche' },
-        { word: 'té', related: 'limón' },
-        { word: 'agua', related: 'hielo' }
-      ],
-      createdAt: new Date().toISOString(),
-      lastUsed: new Date().toISOString(),
-      count: 0,
-      isDefault: true
-    },
-    {
-      id: 'default_animals',
-      name: 'Animales',
-      type: 'single',
-      words: ['perro', 'gato', 'elefante', 'león', 'tigre', 'mono', 'jirafa', 'oso', 'pájaro', 'pez', 'caballo', 'vaca', 'cerdo', 'oveja', 'conejo'],
-      createdAt: new Date().toISOString(),
-      lastUsed: new Date().toISOString(),
-      count: 0,
-      isDefault: true
-    },
-    {
-      id: 'default_sports',
-      name: 'Deportes',
-      type: 'mixed',
-      words: ['fútbol', 'baloncesto', 'tenis', 'natación', 'ciclismo', 'running', 'golf', 'boxeo'],
-      pairs: [
-        { word: 'fútbol', related: 'balón' },
-        { word: 'baloncesto', related: 'canasta' },
-        { word: 'tenis', related: 'raqueta' },
-        { word: 'natación', related: 'piscina' },
-        { word: 'ciclismo', related: 'bicicleta' },
-        { word: 'running', related: 'zapatillas' },
-        { word: 'golf', related: 'palos' }
-      ],
-      createdAt: new Date().toISOString(),
-      lastUsed: new Date().toISOString(),
-      count: 0,
-      isDefault: true
-    },
-    {
-      id: 'default_countries',
-      name: 'Países',
-      type: 'single',
-      words: ['España', 'Francia', 'Italia', 'Alemania', 'Portugal', 'México', 'Argentina', 'Brasil', 'EEUU', 'China', 'Japón', 'Australia'],
-      createdAt: new Date().toISOString(),
-      lastUsed: new Date().toISOString(),
-      count: 0,
-      isDefault: true
-    },
-    {
-      id: 'default_professions',
-      name: 'Profesiones',
-      type: 'mixed',
-      words: ['médico', 'profesor', 'ingeniero', 'cocinero', 'bombero', 'policía', 'artista', 'programador'],
-      pairs: [
-        { word: 'médico', related: 'hospital' },
-        { word: 'profesor', related: 'escuela' },
-        { word: 'ingeniero', related: 'edificio' },
-        { word: 'cocinero', related: 'restaurante' },
-        { word: 'bombero', related: 'camión' },
-        { word: 'policía', related: 'comisaría' },
-        { word: 'artista', related: 'estudio' },
-        { word: 'programador', related: 'computadora' }
-      ],
-      createdAt: new Date().toISOString(),
-      lastUsed: new Date().toISOString(),
-      count: 0,
-      isDefault: true
-    },
-    {
-      id: 'default_music',
-      name: 'Música',
-      type: 'single',
-      words: ['guitarra', 'piano', 'batería', 'violín', 'flauta', 'trompeta', 'saxofón', 'microfono', 'altavoz', 'auriculares'],
-      createdAt: new Date().toISOString(),
-      lastUsed: new Date().toISOString(),
-      count: 0,
-      isDefault: true
-    }
-  ];
+
 
   // Cargar categorías al montar
   useEffect(() => {
@@ -140,7 +50,7 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
   const loadCategories = () => {
     try {
       const savedCategories = localStorage.getItem('impostorCategories');
-      let allCategories: Category[] = [...defaultCategories];
+      let allCategories: Category[] = [];
       
       if (savedCategories) {
         const customCategories: Category[] = JSON.parse(savedCategories);
@@ -161,8 +71,6 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
           const defaultIds = defaultCategories.map(cat => cat.id);
           setSelectedCategories(defaultIds);
           
-          // Guardar en configuración
-          config.selectedCategories = defaultIds;
           localStorage.setItem('impostorGameConfig', JSON.stringify(config));
           
           if (onUpdateConfig) {
@@ -175,6 +83,38 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  /* ===============================
+     BOTÓN: CARGAR DEFAULT
+  =============================== */
+  const loadDefaultCategories = () => {
+    const merged = [
+      ...defaultCategories,
+      ...categories.filter(
+        c => !defaultCategories.some(d => d.id === c.id)
+      )
+    ];
+
+    setCategories(merged);
+
+    const allIds = merged.map(c => c.id);
+    setSelectedCategories(allIds);
+
+    localStorage.setItem('impostorCategories', JSON.stringify(merged));
+    localStorage.setItem(
+      'impostorGameConfig',
+      JSON.stringify({ selectedCategories: allIds })
+    );
+
+    if (window.gameConfig) {
+      window.gameConfig.selectedCategories = allIds;
+    }
+
+    onUpdateConfig?.('selectedCategories', allIds);
+    
+    // Mostrar confirmación
+    alert('¡Categorías por defecto cargadas exitosamente!');
   };
 
   const handleCategoryToggle = (categoryId: string) => {
@@ -408,11 +348,21 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
               Selecciona las categorías con palabras para el juego
             </p>
           </div>
+          
+          {/* Botón para cargar categorías por defecto */}
+          <button
+            onClick={loadDefaultCategories}
+            class="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-medium rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all flex items-center shadow-lg hover:shadow-xl"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Cargar Default
+          </button>
         </div>
 
 
         
-
         {/* Barra de búsqueda */}
         <div class="mb-8">
           <div class="relative">
@@ -444,6 +394,12 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
                   <p class="text-gray-500">
                     No hay categorías que coincidan con "{searchTerm}"
                   </p>
+                  <button
+                    onClick={loadDefaultCategories}
+                    class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Cargar categorías por defecto
+                  </button>
                 </div>
               ) : (
                 <div class="divide-y divide-gray-100">

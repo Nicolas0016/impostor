@@ -105,10 +105,6 @@ export default class ImpostorGame {
     // Selecciona una palabra aleatoria del pool disponible
     private seleccionarPalabraAleatoria(): string {
         // Si no hay categorías, usar lista por defecto
-        if (this.selectedCategories.length === 0) {
-            const defaultWords = ['manzana', 'computadora', 'playa', 'montaña', 'libro', 'música'];
-            return defaultWords[Math.floor(Math.random() * defaultWords.length)];
-        }
         
         // Seleccionar una categoría aleatoria
         const randomCategory = this.selectedCategories[
