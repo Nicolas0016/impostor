@@ -51,14 +51,12 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
     try {
       const savedCategories = localStorage.getItem('impostorCategories');
       let allCategories: Category[] = [];
+      console.log("cosas encontradas" + savedCategories);
       
       if (savedCategories) {
         const customCategories: Category[] = JSON.parse(savedCategories);
         // Filtrar categorías personalizadas que no sean por defecto
-        const filteredCustom = customCategories.filter(
-          cat => !defaultCategories.some(defaultCat => defaultCat.id === cat.id)
-        );
-        allCategories = [...allCategories, ...filteredCustom];
+        allCategories = [...customCategories];
       }
       
       setCategories(allCategories);
