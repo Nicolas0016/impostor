@@ -390,11 +390,9 @@ export default function InsertGames() {
   
   // Función para continuar después de mostrar resultados de eliminación
   function continuarDespuesDeEliminacion(): void {
-    if (votingResult.eliminatedPlayer) {
-      // Si eliminamos a alguien, reiniciamos la votación para continuar
-      reiniciarVotacion();
-    }
-  }
+  setVotingResult({ eliminatedPlayer: null, isImpostor: false });
+  setMessage('Continuando con la votación...');
+}
   
   // Estado de carga
   if (isLoading) {
@@ -513,15 +511,15 @@ export default function InsertGames() {
     case 'voting':
       return (
         <GameVoting
-          round={round}
-          message={message}
-          jugadoresActivos={jugadoresActivos}
-          eliminatedPlayers={eliminatedPlayers}
-          onConfirmElimination={handleConfirmElimination}
-          currentVoter={jugadoresActivos[0]} // Primer jugador activo comienza votando
-          votingResult={votingResult}
-          onContinueAfterResult={continuarDespuesDeEliminacion}
-        />
+      round={round}
+      message={message}
+      jugadoresActivos={jugadoresActivos}
+      eliminatedPlayers={eliminatedPlayers}
+      onConfirmElimination={handleConfirmElimination}
+      currentVoter={jugadoresActivos[0]}
+      votingResult={votingResult}
+      onContinueAfterResult={continuarDespuesDeEliminacion}
+    />
       );
       
     case 'finished':
