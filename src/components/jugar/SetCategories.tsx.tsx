@@ -349,16 +349,6 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
             </p>
           </div>
           
-          {/* Botón para cargar categorías por defecto */}
-          <button
-            onClick={loadDefaultCategories}
-            class="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-medium rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all flex items-center shadow-lg hover:shadow-xl"
-          >
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            Cargar Default
-          </button>
         </div>
 
 
@@ -391,12 +381,10 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
                     <span class="text-gray-400 text-2xl">🔍</span>
                   </div>
                   <h4 class="text-lg font-semibold text-gray-700 mb-2">No se encontraron categorías</h4>
-                  <p class="text-gray-500">
-                    No hay categorías que coincidan con "{searchTerm}"
-                  </p>
+                  
                   <button
                     onClick={loadDefaultCategories}
-                    class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    class="mt-4 px-4 py-2 bg-transparent text-black/50 rounded-lg hover:text-black/70 transition-colors"
                   >
                     Cargar categorías por defecto
                   </button>
@@ -431,11 +419,6 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
                                   <span class="font-medium text-gray-900 text-lg">
                                     {category.name}
                                   </span>
-                                  {isDefault && (
-                                    <span class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full flex items-center">
-                                      <span class="mr-1">⚡</span> Por defecto
-                                    </span>
-                                  )}
                                   {category.count > 0 && !isDefault && (
                                     <span class="ml-2 px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">
                                       {category.count} vez{category.count !== 1 ? 'es' : ''}
@@ -447,14 +430,6 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
                                   <span class="text-sm text-gray-500 mr-4">
                                     {stats.icon} {stats.typeLabel}
                                   </span>
-                                  <span class="text-sm text-gray-500">
-                                    • {stats.count} elemento{stats.count !== 1 ? 's' : ''}
-                                  </span>
-                                  {stats.details && (
-                                    <span class="text-sm text-gray-500 ml-2">
-                                      ({stats.details})
-                                    </span>
-                                  )}
                                 </div>
                               </div>
                               
@@ -527,7 +502,7 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
             <svg class="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
-            Agregar Nueva Categoría Personalizada
+            Nueva Categoría
           </button>
           
           <p class="text-gray-500 text-sm text-center mt-3">

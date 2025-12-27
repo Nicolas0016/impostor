@@ -77,9 +77,6 @@ export default function GameConfig({
                     </span>
                   )}
                 </div>
-                <span className="text-gray-400 text-sm">
-                  {estado.originalPlayers.length} jugadores totales
-                </span>
               </div>
               <div className="space-y-2">
                 <div className="flex flex-wrap gap-2">
@@ -111,8 +108,8 @@ export default function GameConfig({
             </div>
             
             {/* Estadísticas */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex items-center justify-center bg-gradient-to-br from-red-900/30 to-red-800/20 p-4 rounded-lg border border-red-700/30">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="flex items-center col-span-2 justify-center bg-gradient-to-br from-red-900/30 to-red-800/20 p-4 rounded-lg border border-red-700/30">
                 
                   <h3 className="text-lg font-bold text-red-400 ">Impostores {game.maxImpostors}</h3>
                   
@@ -120,7 +117,7 @@ export default function GameConfig({
               
               <div className="bg-gradient-to-br from-green-900/30 to-green-800/20 p-4 rounded-lg border border-green-700/30">
                 <div className="flex items-center justify-center">
-                  <h3 className="text-lg font-bold text-green-400">Ronda {round}</h3>
+                  <h3 className="text-lg font-bold text-green-400">{round}°</h3>
                   
                 </div>
               </div>

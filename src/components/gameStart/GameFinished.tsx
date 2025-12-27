@@ -144,9 +144,7 @@ export default function GameFinished({
                   <p className={`text-xl font-bold font-mono mt-1 break-all ${estado.impostorWord !== 'IMPOSTOR' ? 'text-yellow-400' : 'text-red-400'}`}>
                     {estado.impostorWord !== 'IMPOSTOR' ? estado.impostorWord : ""}
                   </p>
-                  {estado.impostorWord !== 'IMPOSTOR' && (
-                    <p className="text-yellow-300 text-xs mt-1">(Palabra relacionada)</p>
-                  )}
+                  
                 </div>
               </div>
             </div>     
@@ -175,14 +173,6 @@ export default function GameFinished({
         </div>
         
         
-        <div className="mt-6 text-center text-gray-500 text-sm">
-          <p>🎉 Gracias por jugar IMPOSTOR WEB 🎉</p>
-          {ganaronTripulantes ? (
-            <p className="text-green-400/70 mt-1">¡Los tripulantes han sobrevivido a la amenaza impostora!</p>
-          ) : (
-            <p className="text-red-400/70 mt-1">¡Los impostores han tomado el control del juego!</p>
-          )}
-        </div>
       </div>
     </div>
   );

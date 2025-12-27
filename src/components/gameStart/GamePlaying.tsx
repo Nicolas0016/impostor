@@ -36,7 +36,10 @@ export default function GamePlaying({
   // Obtener el turno actual (esto depende de cómo esté implementado tu juego)
   // Si no hay método público, puedes calcularlo de otra forma
   const currentTurn = playerInfo ? 1 : 0; // Esto es un placeholder
-
+  const todosImpostores = roundInfo?.roundImpostors || [];
+  const demasImpostores = todosImpostores.filter(
+    impostor => impostor !== currentPlayer
+  );
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-gray-900 to-black p-4 flex items-center justify-center">
       <div className="max-w-md w-full">
@@ -68,22 +71,25 @@ export default function GamePlaying({
               {playerInfo?.role === 'impostor' ? (
                 <div className="space-y-4">
                   <div className="p-6 rounded-xl bg-gradient-to-br from-red-900/60 to-red-800/40 border-2 border-red-500/50 shadow-lg">
-                    <div className="text-3xl font-bold text-red-300 font-mono tracking-wider mb-2">
-                      IMPOSTOR
-                    </div>
-                    <div className="text-lg text-red-200">
-                      {esImpostorConPalabraRelacionada ? playerInfo?.word : "Tu misión es no ser descubierto"}
+                    <div className="text-3xl font-bold text-red-300 font-mono tracking-wider">
+                      {esImpostorConPalabraRelacionada ? playerInfo?.word : "IMPOSTOR"}
                     </div>
                   </div>
+
+                <div className="flex gap-2 flex-wrap justify-center">
+                  {demasImpostores.map((impostor) => (
+                    <span className="px-4 py-2 bg-gradient-to-br from-red-900/60 to-red-800/40 border-2 border-red-500/50 text-red-200 font-bold rounded-full
+                    ">{impostor}</span>
+                  ))}
                 </div>
+                </div>
+                
                   ):  (
                 /* Información para TRIPULANTE */
                 <div className="space-y-4">
                   {/* Palabra secreta */}
                   <div className="p-6 bg-gradient-to-br from-gray-800/60 to-gray-900/40 backdrop-blur-sm rounded-xl border border-gray-700 shadow-lg">
-                    <div className="text-sm text-gray-400 uppercase tracking-wider mb-2">
-                      Palabra secreta de la ronda
-                    </div>
+                    
                     <div className="text-3xl font-bold text-white font-mono tracking-wider">
                       {playerInfo?.word || roundInfo?.palabraTripulante || game.secretWord}
                     </div>
@@ -103,7 +109,6 @@ export default function GamePlaying({
           )}
         </div>
         <footer className="flex justify-center">
-
           <p className="text-gray-400">Pasa el dispositivo al jugador indicado</p>
         </footer>
       </div>
