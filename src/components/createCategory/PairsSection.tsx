@@ -23,15 +23,6 @@ export function PairsSection({
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
           Pares Relacionados
         </h3>
-        <button
-          onClick={onAddPair}
-          className="px-4 py-2 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-lg hover:bg-green-200 dark:hover:bg-green-800 transition-colors flex items-center"
-        >
-          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-          </svg>
-          Agregar par
-        </button>
       </div>
 
       <div className="space-y-6">
@@ -60,14 +51,6 @@ export function PairsSection({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <div className="flex items-center mb-2">
-                  <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mr-2">
-                    <span className="text-blue-600 dark:text-blue-400 text-sm font-bold">👥</span>
-                  </div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Palabra para tripulantes
-                  </label>
-                </div>
                 <input
                   type="text"
                   value={pair.word}
@@ -78,14 +61,6 @@ export function PairsSection({
               </div>
 
               <div>
-                <div className="flex items-center mb-2">
-                  <div className="w-8 h-8 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center mr-2">
-                    <span className="text-red-600 dark:text-red-400 text-sm font-bold">😈</span>
-                  </div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Palabra para impostores
-                  </label>
-                </div>
                 <input
                   type="text"
                   value={pair.related}
@@ -97,7 +72,18 @@ export function PairsSection({
             </div>
           </div>
         ))}
+
+        <button
+          onClick={onAddPair}
+          className="px-4 py-4 w-full bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-lg hover:bg-green-200 dark:hover:bg-green-800 transition-colors flex items-center"
+        >
+          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Agregar par
+        </button> 
       </div>
+
     </div>
   );
 }

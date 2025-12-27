@@ -146,7 +146,7 @@ export default function CategoryCreator() {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-b-3xl shadow-xl overflow-hidden">
+    <div className="bg-white dark:bg-gray-900  shadow-xl overflow-hidden">
       <div className="p-6 md:p-8">
         <CategoryNameInput 
           categoryName={categoryName}
@@ -168,7 +168,7 @@ export default function CategoryCreator() {
               <div className="flex items-center justify-center">
                 <span className="text-2xl mr-3">📝</span>
                 <div className="text-left">
-                  <div>Palabras Sueltas</div>
+                  <div>Palabras</div>
                 </div>
               </div>
             </button>
@@ -184,7 +184,7 @@ export default function CategoryCreator() {
               <div className="flex items-center justify-center">
                 <span className="text-2xl mr-3">🔗</span>
                 <div className="text-left">
-                  <div>Pares Relacionados</div>
+                  <div>Pares</div>
                 </div>
               </div>
             </button>
@@ -211,16 +211,7 @@ export default function CategoryCreator() {
         {/* Botones de acción */}
         <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
           <div className="flex flex-col md:flex-row gap-4">
-            <button
-              onClick={() => window.location.href = '/jugar'}
-              className="px-6 py-3 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-400 dark:hover:border-gray-600 transition-all duration-300 font-medium flex items-center justify-center"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              Cancelar
-            </button>
-            
+           
             <div className="flex-1"></div>
             
             <button
@@ -245,7 +236,7 @@ export default function CategoryCreator() {
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                   </svg>
-                  Guardar Categoría Completa
+                  Guardar Categoría
                 </>
               )}
             </button>
