@@ -238,10 +238,7 @@ export default function InsertGames() {
     setShowRole(false);
     
     if (resultado.isRoundComplete) {
-      setMessage('¡Ronda completada! Todos han visto sus roles. Iniciando votación...');
-      setTimeout(() => {
         setGameState('voting');
-      }, 1500);
     } else {
       const info = game.obtenerInfoJugadorActual();
       setCurrentPlayer(info.player);
