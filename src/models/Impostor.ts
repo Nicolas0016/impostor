@@ -293,12 +293,11 @@ export default class ImpostorGame {
             palabraTripulante = this.seleccionarPalabraAleatoria();
             
             // Verificar si existe palabra relacionada para esta palabra
-            if (this.round >= 3 && this.selectedCategories.length > 0) {
                 if (this.existePalabraRelacionada(palabraTripulante)) {
                     palabraImpostor = this.encontrarPalabraRelacionada(palabraTripulante);
                     break; // Salir del bucle si encontramos palabra con relación
                 }
-            } else {
+             else {
                 // Para rondas 1 y 2, o si no hay categorías seleccionadas
                 break;
             }

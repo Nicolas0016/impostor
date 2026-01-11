@@ -2,7 +2,7 @@
   {
     "id": "default_foods",
     "name": "Comidas y Bebidas",
-    "type": "mixed",
+    "type": "mixed","words":[],
     "pairs": [
       { "word": "pizza", "related": "italia" },
       { "word": "hamburguesa", "related": "rápida" },
@@ -22,7 +22,7 @@
   },
   {
     "id": "default_animals",
-    "name": "Animales",
+    "name": "Animales","words":[],
     "type": "mixed",
     "pairs": [
       { "word": "perro", "related": "doméstico" },
@@ -49,7 +49,7 @@
   {
     "id": "default_sports",
     "name": "Deportes",
-    "type": "mixed",
+    "type": "mixed","words":[],
     "pairs": [
       { "word": "fútbol", "related": "equipo" },
       { "word": "baloncesto", "related": "canasta" },
@@ -69,7 +69,7 @@
   },
   {
     "id": "default_countries",
-    "name": "Países y Ciudades",
+    "name": "Países y Ciudades","words":[],
     "type": "mixed",
     "pairs": [
       { "word": "España", "related": "ibérica" },
@@ -92,7 +92,7 @@
   },
   {
     "id": "default_professions",
-    "name": "Profesiones",
+    "name": "Profesiones","words":[],
     "type": "mixed",
     "pairs": [
       { "word": "médico", "related": "salud" },
@@ -114,7 +114,7 @@
   {
     "id": "default_music",
     "name": "Música e Instrumentos",
-    "type": "mixed",
+    "type": "mixed","words":[],
     "pairs": [
       { "word": "guitarra", "related": "cuerdas" },
       { "word": "piano", "related": "teclado" },
@@ -137,7 +137,7 @@
   {
     "id": "default_technology",
     "name": "Tecnología",
-    "type": "mixed",
+    "type": "mixed","words":[],
     "pairs": [
       { "word": "computadora", "related": "digital" },
       { "word": "teléfono", "related": "comunicación" },
@@ -156,7 +156,7 @@
   },
   {
     "id": "default_nature",
-    "name": "Naturaleza",
+    "name": "Naturaleza","words":[],
     "type": "mixed",
     "pairs": [
       { "word": "árbol", "related": "hojas" },
@@ -186,34 +186,36 @@
       { "word": "Fortnite", "related": "Battle Royale" },
       { "word": "Call of Duty", "related": "Guerra" },
       { "word": "FIFA", "related": "Fútbol" },
-      { "word": "GTA", "related": "Crimen" },
+      { "word": "GTA", "related": "Ps2" },
       { "word": "Super Smash Bros", "related": "Lucha" },
       { "word": "Animal Crossing", "related": "Isla" },
-      { "word": "Among Us", "related": "Tramposo" },
-      { "word": "Roblox", "related": "Crear" }
+      { "word": "Among Us", "related": "Impostor" },
+      { "word": "Roblox", "related": "Bebes" }
     ],
     "createdAt": "2024-01-01T00:00:00.000Z",
     "lastUsed": "2024-01-01T00:00:00.000Z",
-    "count": 0,
+    "count": 0,"words":[],
     "isDefault": true
+    
   },
   {
     "id": "default_anime",
     "name": "Anime",
     "type": "mixed",
+    "words":[],
     "pairs": [
-      { "word": "Naruto", "related": "Ninja" },
-      { "word": "Dragon Ball", "related": "Goku" },
+      { "word": "Naruto", "related": "Naranja" },
+      { "word": "Dragon Ball", "related": "Esencia" },
       { "word": "One Piece", "related": "Piratas" },
       { "word": "Attack on Titan", "related": "Titanes" },
       { "word": "My Hero Academia", "related": "Héroes" },
-      { "word": "Death Note", "related": "Ryuk" },
-      { "word": "Demon Slayer", "related": "Nezuko" },
+      { "word": "Death Note", "related": "Libreta" },
+      { "word": "Demon Slayer", "related": "Caja" },
       { "word": "Sailor Moon", "related": "Luna" },
-      { "word": "Pokémon", "related": "Ash" },
-      { "word": "Fullmetal Alchemist", "related": "Alquimia" },
-      { "word": "Hunter x Hunter", "related": "Gon" },
-      { "word": "Bleach", "related": "Shinigami" },
+      { "word": "Pokémon", "related": "Pocket" },
+      { "word": "Fullmetal Alchemist", "related": "Rubio" },
+      { "word": "Hunter x Hunter", "related": "Verde" },
+      { "word": "Bleach", "related": "Alma" },
       { "word": "Spy x Family", "related": "Familia" }
     ],
     "createdAt": "2024-01-01T00:00:00.000Z",
@@ -224,7 +226,7 @@
   {
     "id": "default_series",
     "name": "Series",
-    "type": "mixed",
+    "type": "mixed","words":[],
     "pairs": [
       { "word": "Stranger Things", "related": "Upside Down" },
       { "word": "Game of Thrones", "related": "Dragones" },

@@ -133,7 +133,7 @@ export default function GameFinished({
             </div>
             
             {/* Palabras de la ronda final */}
-            <div className="bg-gray-900/60 p-5 rounded-xl">
+            <div className="">
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-gray-800/40 p-4 rounded-lg">
                   <p className="text-gray-400 text-sm mb-1">Para Tripulantes</p>
@@ -147,7 +147,16 @@ export default function GameFinished({
                   
                 </div>
               </div>
-            </div>     
+            </div>    
+            <div >
+              <ul className='flex gap-4 items-center justify-center'>
+              {estado.impostors.map((name, index)=>(
+                <li key={index}>
+                  <span className='bg-accent-600/70 text-accent-200 py-2 px-4 rounded-full'>{name}</span>
+                </li>
+              ))}
+            </ul>
+            </div> 
           </div>
         </div>
         
