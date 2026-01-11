@@ -220,7 +220,7 @@ export default function GameVoting({
 
               {/* Lista de jugadores para votar */}
               <h2 className="text-2xl font-bold text-white mb-4">
-                {currentVoterName}, selecciona al jugador a eliminar:
+                Selecciona al jugador a eliminar:
               </h2>
               
               <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
