@@ -123,7 +123,7 @@ export default function GenerateSummary() {
     };
     
     loadConfig();
-  }, []);
+  }, [gameConfig]);
   
   // Generar nombres por defecto según la cantidad de jugadores
   const generateDefaultNames = (playerCount: number): string[] => {

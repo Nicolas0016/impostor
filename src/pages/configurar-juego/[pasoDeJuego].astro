@@ -1,0 +1,21 @@
+---
+import Wizard from '../../components/jugar/Wizard.astro';
+import Layout from '../../layouts/Layout.astro';
+export async function getStaticPaths() {
+  return [
+    { params: { pasoDeJuego: '1' } },
+    { params: { pasoDeJuego: '2' } },
+    { params: { pasoDeJuego: '3' } }
+  ];
+}
+
+const {pasoDeJuego} = Astro.params;
+---
+
+<Layout title="Empezar a Jugar - Impostor Game">
+  <section class="py-16 bg-gradient-to-b from-white to-gray-50">
+    <div class="container mx-auto px-4">
+      <Wizard pasoDeJuego={pasoDeJuego}/>
+    </div>
+  </section>
+</Layout>

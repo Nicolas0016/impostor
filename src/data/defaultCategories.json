@@ -3,12 +3,11 @@
     "id": "default_foods",
     "name": "Comidas y Bebidas",
     "type": "mixed",
-    "words": ["pizza", "hamburguesa", "ensalada", "sushi", "helado", "café", "té", "agua", "refresco", "vino"],
     "pairs": [
-      { "word": "pizza", "related": "italiana" },
+      { "word": "pizza", "related": "italia" },
       { "word": "hamburguesa", "related": "rápida" },
       { "word": "ensalada", "related": "saludable" },
-      { "word": "sushi", "related": "japonesa" },
+      { "word": "sushi", "related": "japones" },
       { "word": "helado", "related": "frío" },
       { "word": "café", "related": "energía" },
       { "word": "té", "related": "infusión" },
@@ -25,7 +24,6 @@
     "id": "default_animals",
     "name": "Animales",
     "type": "mixed",
-    "words": ["perro", "gato", "elefante", "león", "tigre", "mono", "jirafa", "oso", "pájaro", "pez", "caballo", "vaca", "cerdo", "oveja", "conejo"],
     "pairs": [
       { "word": "perro", "related": "doméstico" },
       { "word": "gato", "related": "independiente" },
@@ -52,7 +50,6 @@
     "id": "default_sports",
     "name": "Deportes",
     "type": "mixed",
-    "words": ["fútbol", "baloncesto", "tenis", "natación", "ciclismo", "running", "golf", "boxeo", "balonmano", "voleibol"],
     "pairs": [
       { "word": "fútbol", "related": "equipo" },
       { "word": "baloncesto", "related": "canasta" },
@@ -62,7 +59,7 @@
       { "word": "running", "related": "correr" },
       { "word": "golf", "related": "campo" },
       { "word": "boxeo", "related": "combate" },
-      { "word": "balonmano", "related": "manos" },
+      { "word": "handball", "related": "manos" },
       { "word": "voleibol", "related": "red" }
     ],
     "createdAt": "2024-01-01T00:00:00.000Z",
@@ -74,7 +71,6 @@
     "id": "default_countries",
     "name": "Países y Ciudades",
     "type": "mixed",
-    "words": ["España", "Francia", "Italia", "Alemania", "Portugal", "México", "Argentina", "Brasil", "EEUU", "China", "Japón", "Australia"],
     "pairs": [
       { "word": "España", "related": "ibérica" },
       { "word": "Francia", "related": "torre" },
@@ -98,7 +94,6 @@
     "id": "default_professions",
     "name": "Profesiones",
     "type": "mixed",
-    "words": ["médico", "profesor", "ingeniero", "cocinero", "bombero", "policía", "artista", "programador", "arquitecto", "juez"],
     "pairs": [
       { "word": "médico", "related": "salud" },
       { "word": "profesor", "related": "enseñanza" },
@@ -120,7 +115,6 @@
     "id": "default_music",
     "name": "Música e Instrumentos",
     "type": "mixed",
-    "words": ["guitarra", "piano", "batería", "violín", "flauta", "trompeta", "saxofón", "micrófono", "altavoz", "auriculares", "nota", "partitura"],
     "pairs": [
       { "word": "guitarra", "related": "cuerdas" },
       { "word": "piano", "related": "teclado" },
@@ -144,18 +138,16 @@
     "id": "default_technology",
     "name": "Tecnología",
     "type": "mixed",
-    "words": ["computadora", "teléfono", "tablet", "internet", "wifi", "app", "software", "hardware", "robot", "inteligencia artificial"],
     "pairs": [
       { "word": "computadora", "related": "digital" },
       { "word": "teléfono", "related": "comunicación" },
       { "word": "tablet", "related": "portátil" },
       { "word": "internet", "related": "global" },
       { "word": "wifi", "related": "inalámbrico" },
-      { "word": "app", "related": "aplicación" },
       { "word": "software", "related": "programa" },
       { "word": "hardware", "related": "físico" },
       { "word": "robot", "related": "automático" },
-      { "word": "inteligencia artificial", "related": "futuro" }
+      { "word": "IA", "related": "futuro" } 
     ],
     "createdAt": "2024-01-01T00:00:00.000Z",
     "lastUsed": "2024-01-01T00:00:00.000Z",
@@ -166,7 +158,6 @@
     "id": "default_nature",
     "name": "Naturaleza",
     "type": "mixed",
-    "words": ["árbol", "flor", "montaña", "río", "mar", "sol", "luna", "estrella", "bosque", "desierto"],
     "pairs": [
       { "word": "árbol", "related": "hojas" },
       { "word": "flor", "related": "color" },
@@ -178,6 +169,78 @@
       { "word": "estrella", "related": "brillo" },
       { "word": "bosque", "related": "verde" },
       { "word": "desierto", "related": "seco" }
+    ],
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "lastUsed": "2024-01-01T00:00:00.000Z",
+    "count": 0,
+    "isDefault": true
+  }, {
+    "id": "default_videogames",
+    "name": "Videojuegos",
+    "type": "mixed",
+    "pairs": [
+      { "word": "Mario", "related": "Nintendo" },
+      { "word": "Zelda", "related": "Trifuerza" },
+      { "word": "Pokémon", "related": "Pikachu" },
+      { "word": "Minecraft", "related": "Cubos" },
+      { "word": "Fortnite", "related": "Battle Royale" },
+      { "word": "Call of Duty", "related": "Guerra" },
+      { "word": "FIFA", "related": "Fútbol" },
+      { "word": "GTA", "related": "Crimen" },
+      { "word": "Super Smash Bros", "related": "Lucha" },
+      { "word": "Animal Crossing", "related": "Isla" },
+      { "word": "Among Us", "related": "Tramposo" },
+      { "word": "Roblox", "related": "Crear" }
+    ],
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "lastUsed": "2024-01-01T00:00:00.000Z",
+    "count": 0,
+    "isDefault": true
+  },
+  {
+    "id": "default_anime",
+    "name": "Anime",
+    "type": "mixed",
+    "pairs": [
+      { "word": "Naruto", "related": "Ninja" },
+      { "word": "Dragon Ball", "related": "Goku" },
+      { "word": "One Piece", "related": "Piratas" },
+      { "word": "Attack on Titan", "related": "Titanes" },
+      { "word": "My Hero Academia", "related": "Héroes" },
+      { "word": "Death Note", "related": "Ryuk" },
+      { "word": "Demon Slayer", "related": "Nezuko" },
+      { "word": "Sailor Moon", "related": "Luna" },
+      { "word": "Pokémon", "related": "Ash" },
+      { "word": "Fullmetal Alchemist", "related": "Alquimia" },
+      { "word": "Hunter x Hunter", "related": "Gon" },
+      { "word": "Bleach", "related": "Shinigami" },
+      { "word": "Spy x Family", "related": "Familia" }
+    ],
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "lastUsed": "2024-01-01T00:00:00.000Z",
+    "count": 0,
+    "isDefault": true
+  },
+  {
+    "id": "default_series",
+    "name": "Series",
+    "type": "mixed",
+    "pairs": [
+      { "word": "Stranger Things", "related": "Upside Down" },
+      { "word": "Game of Thrones", "related": "Dragones" },
+      { "word": "Breaking Bad", "related": "Walter White" },
+      { "word": "The Walking Dead", "related": "Zombies" },
+      { "word": "Friends", "related": "Central Perk" },
+      { "word": "The Office", "related": "Michael Scott" },
+      { "word": "La Casa de Papel", "related": "Profesor" },
+      { "word": "The Crown", "related": "Reina" },
+      { "word": "The Mandalorian", "related": "Grogu" },
+      { "word": "The Witcher", "related": "Geralt" },
+      { "word": "Sherlock", "related": "Detective" },
+      { "word": "The Big Bang Theory", "related": "Sheldon" },
+      { "word": "Dark", "related": "Viaje temporal" },
+      { "word": "The Boys", "related": "Superhéroes" },
+      { "word": "Élite", "related": "Colegio" }
     ],
     "createdAt": "2024-01-01T00:00:00.000Z",
     "lastUsed": "2024-01-01T00:00:00.000Z",

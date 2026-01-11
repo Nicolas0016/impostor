@@ -1,284 +1,109 @@
 ---
-import StepModes from "./StepModes.astro";
+import SetCategories from './SetCategories.tsx';
 import StepPlayers from "./StepPlayers.astro";
-import StepRestrictions from "./StepRestrictions.astro";
-import StepRoles from "./StepRoles.astro";
 import StepSummary from "./StepSummary.astro";
-import  SetCategories from './SetCategories.tsx';
+const {pasoDeJuego} = Astro.params
+const step = parseInt(pasoDeJuego)
 ---
 
 <div id="wizard-container">
   <!-- Indicador de pasos -->
   <div class="mb-12">
     <div class="flex justify-between items-center max-w-4xl mx-auto">
-      {['Jugadores', 'Categorías', 'Modalidades', 'Roles', 'Restricciones', 'Resumen'].map((step, index) => (
-        <div key={step} class="flex flex-col items-center" style={`flex: 1;`}>
-          <div 
-            class="step-indicator w-12 h-12 rounded-full border-2 p-2 border-gray-300 flex items-center justify-center font-bold text-gray-500 mb-2 transition-all duration-300"
-            data-step={index + 1}
-          >
-            <span class="step-number">{index + 1}</span>
-            <span class="step-checkmark hidden">✓</span>
+      {['Jugadores', 'Categorías', 'Resumen'].map((stepLabel, index) => {
+        const stepNumber = index + 1;
+        let stepClass = "step-indicator w-12 h-12 rounded-full border-2 p-2 border-gray-300 flex items-center justify-center font-bold text-gray-500 mb-2 transition-all duration-300";
+        
+        if (step === stepNumber) {
+          stepClass += " step-active";
+        } else if (step > stepNumber) {
+          stepClass += " step-completed";
+        }
+        
+        return (
+          <div key={stepLabel} class="flex flex-col items-center" style={`flex: 1;`}>
+            <div 
+              class={stepClass}
+              data-step={stepNumber}
+            >
+              {step > stepNumber ? (
+                <span class="step-checkmark">✓</span>
+              ) : (
+                <span class="step-number">{stepNumber}</span>
+              )}
+            </div>
+            <span class="step-label text-sm font-medium text-gray-600 text-center hidden md:block">
+              {stepLabel}
+            </span>
           </div>
-          <span class="step-label text-sm font-medium text-gray-600 text-center hidden md:block">
-            {step}
-          </span>
-        </div>
-      ))}
+        );
+      })}
     </div>
   </div>
   
   <!-- Contenido de los pasos -->
   <div class="max-w-4xl mx-auto">
     <!-- Paso 1: Jugadores -->
-    <div class="step-content" data-step="1">
-      <StepPlayers />
-    </div>
+    {step === 1 && (
+      <div class="step-content">
+        <StepPlayers />
+      </div>
+    )}
     
     <!-- Paso 2: Categorías -->
-    <div class="step-content" data-step="2" style="display: none;">
-      <SetCategories client:only />
-    </div>
+    {step === 2 && (
+      <div class="step-content">
+        <SetCategories client:only />
+      </div>
+    )}
     
-    <!-- Paso 3: Modalidades -->
-    <div class="step-content" data-step="3" style="display: none;">
-      <StepModes />
-    </div>
-    
-    <!-- Paso 4: Roles -->
-    <div class="step-content" data-step="4" style="display: none;">
-      <StepRoles />
-    </div>
-    
-    <!-- Paso 5: Restricciones -->
-    <div class="step-content" data-step="5" style="display: none;">
-      <StepRestrictions />
-    </div>
-    
-    <!-- Paso 6: Resumen -->
-    <div class="step-content" data-step="6" style="display: none;">
-      <StepSummary />
-    </div>
+    <!-- Paso 3: Resumen -->
+    {step === 3 && (
+      <div class="step-content">
+        <StepSummary />
+      </div>
+    )}
     
     <!-- Botones de navegación -->
     <div class="flex justify-between mt-12 pt-8 border-t border-gray-200">
-      <button 
+      <a 
         id="prevBtn"
-        class="btn border-2 border-gray-300 text-gray-700 hover:bg-gray-50 px-8"
-        style="display: none;"
+        href={`/configurar-juego/${step - 1}`}
+        class={`btn border-2 border-gray-300 text-gray-700 hover:bg-gray-50 px-8 ${step <= 1 ? 'pointer-events-none text-transparent' : ''}`}
       >
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
         Anterior
-      </button>
+      </a>
       
-      <div class="flex-1"></div>
-      
-      <button 
-        id="nextBtn"
-        class="btn bg-gradient-to-r flex py-2 from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 px-8"
-      >
-        Siguiente
-        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
+      {step < 3 ? (
+        <a 
+          id="nextBtn"
+          href={`/configurar-juego/${step + 1}`}
+          class="btn bg-gradient-to-r flex py-2 from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 px-8"
+        >
+          Siguiente
+          <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      ) : (
+        <a 
+          id="startBtn"
+          href="/game-start"
+          class="btn bg-gradient-to-r flex py-2 from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 px-8"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Empezar a jugar
+        </a>
+      )}
     </div>
   </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Estado inicial
-  let gameConfig = {
-    players: 6,
-    maxImpostors: 2,
-    selectedModes: [],
-    selectedRoles: [],
-    selectedRestriction: null,
-    selectedCategories: [], // Nueva propiedad
-    allCategories: [], // Para almacenar todas las categorías
-    difficulty: 'media',
-    showTutorial: true,
-    timePerRound: 60
-  };
-  
-  let currentStep = 1;
-  const totalSteps = 6; // Cambiado a 6 pasos
-
-  // Función para actualizar el paso
-  function updateStep(step) {
-    if (step < 1 || step > totalSteps) return;
-    
-    currentStep = step;
-    updateUI();
-  }
-
-  // Función para actualizar la configuración
-  function updateConfig(key, value) {
-    gameConfig[key] = value;
-    updateUI();
-  }
-
-  // Función para actualizar la UI
-  function updateUI() {
-    // Actualizar indicador de pasos
-    document.querySelectorAll('.step-indicator').forEach(function(indicator, index) {
-      const stepNumber = index + 1;
-      const stepNumberElement = indicator.querySelector('.step-number');
-      const stepCheckmark = indicator.querySelector('.step-checkmark');
-      
-      // Resetear todas las clases primero
-      indicator.classList.remove('step-active', 'step-completed');
-      
-      if (stepNumber < currentStep) {
-        // Paso completado
-        indicator.classList.add('step-completed');
-        if (stepNumberElement) stepNumberElement.classList.add('hidden');
-        if (stepCheckmark) stepCheckmark.classList.remove('hidden');
-      } else if (stepNumber === currentStep) {
-        // Paso activo
-        indicator.classList.add('step-active');
-        if (stepNumberElement) {
-          stepNumberElement.classList.remove('hidden');
-        }
-        if (stepCheckmark) stepCheckmark.classList.add('hidden');
-      } else {
-        // Paso pendiente
-        if (stepNumberElement) {
-          stepNumberElement.classList.remove('hidden');
-        }
-        if (stepCheckmark) stepCheckmark.classList.add('hidden');
-      }
-    });
-    
-    // Actualizar contenido del paso
-    document.querySelectorAll('.step-content').forEach(function(content, index) {
-      const stepNumber = index + 1;
-      if (stepNumber === currentStep) {
-        content.style.display = 'block';
-      } else {
-        content.style.display = 'none';
-      }
-    });
-    
-    // Actualizar botones
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    
-    if (prevBtn) {
-      prevBtn.style.display = currentStep === 1 ? 'none' : 'inline-flex';
-    }
-    
-    if (nextBtn) {
-      const isLastStep = currentStep === totalSteps;
-      const newNextBtn = nextBtn.cloneNode(true);
-      nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
-      
-      const updatedNextBtn = document.getElementById('nextBtn');
-      if (updatedNextBtn) {
-        if (isLastStep) {
-          updatedNextBtn.innerHTML = 'Comenzar Partida <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>';
-          updatedNextBtn.addEventListener('click', startGame);
-        } else {
-          updatedNextBtn.innerHTML = 'Siguiente <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>';
-          updatedNextBtn.addEventListener('click', function() {
-            // Validar paso actual antes de avanzar
-            if (validateCurrentStep()) {
-              updateStep(currentStep + 1);
-            }
-          });
-        }
-      }
-    }
-    
-    // Guardar en localStorage
-    localStorage.setItem('impostorGameConfig', JSON.stringify(gameConfig));
-  }
-
-  // Función para validar el paso actual
-  function validateCurrentStep() {
-    switch(currentStep) {
-      case 1: // Jugadores
-        const playerNames = gameConfig.playerNames || [];
-        const validPlayers = playerNames.filter(name => name && name.trim() !== '');
-        if (validPlayers.length < 3) {
-          alert('Se necesitan al menos 3 jugadores para comenzar');
-          return false;
-        }
-        break;
-        
-      case 2: // Categorías
-        const selectedCategories = gameConfig.selectedCategories || [];
-        if (selectedCategories.length === 0) {
-          if (!confirm('No has seleccionado ninguna categoría. ¿Quieres continuar sin categorías?\n\nLas palabras se generarán aleatoriamente.')) {
-            return false;
-          }
-        }
-        break;
-        
-      // Puedes agregar más validaciones para otros pasos aquí
-    }
-    return true;
-  }
-
-  // Función para empezar la partida
-  function startGame() {
-    console.log('Configuración final:', gameConfig);
-    
-    // Validar que haya categorías seleccionadas o mostrar advertencia
-    if (!gameConfig.selectedCategories || gameConfig.selectedCategories.length === 0) {
-      if (!confirm('No has seleccionado categorías. Las palabras se generarán aleatoriamente.\n\n¿Deseas continuar?')) {
-        return;
-      }
-    }
-    
-    window.location.href = '../gameStart';
-  }
-
-  // Cargar configuración guardada
-  const savedConfig = localStorage.getItem('impostorGameConfig');
-  if (savedConfig) {
-    try {
-      const parsedConfig = JSON.parse(savedConfig);
-      gameConfig = Object.assign({}, gameConfig, parsedConfig);
-    } catch (error) {
-      console.error('Error al cargar configuración:', error);
-    }
-  }
-  
-  // Inicializar UI
-  updateUI();
-  
-  // Configurar botones
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  
-  if (prevBtn) {
-    prevBtn.addEventListener('click', function() {
-      updateStep(currentStep - 1);
-    });
-  }
-  
-  if (nextBtn) {
-    nextBtn.addEventListener('click', function() {
-      if (currentStep === totalSteps) {
-        startGame();
-      } else {
-        if (validateCurrentStep()) {
-          updateStep(currentStep + 1);
-        }
-      }
-    });
-  }
-  
-  // Exponer funciones globalmente
-  window.updateConfig = updateConfig;
-  window.updateStep = updateStep;
-  window.gameConfig = gameConfig;
-});
-</script>
 
 <style>
   .step-indicator {

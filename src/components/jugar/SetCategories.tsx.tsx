@@ -186,14 +186,6 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
   const confirmDeleteCategory = () => {
     if (!categoryToDelete) return;
 
-    // No permitir eliminar categorías por defecto
-    if (categoryToDelete.isDefault) {
-      alert('No se pueden eliminar las categorías por defecto');
-      setShowDeleteConfirm(false);
-      setCategoryToDelete(null);
-      return;
-    }
-
     // Filtrar la categoría a eliminar
     const updatedCategories = categories.filter(cat => cat.id !== categoryToDelete.id);
     setCategories(updatedCategories);
@@ -299,20 +291,6 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
                 ¿Estás seguro de que quieres eliminar la categoría 
                 <span class="font-bold text-gray-800"> "{categoryToDelete.name}"</span>?
               </p>
-              
-              {categoryToDelete.isDefault ? (
-                <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <p class="text-yellow-700 text-sm">
-                    Esta es una categoría por defecto y no se puede eliminar.
-                  </p>
-                </div>
-              ) : (
-                <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p class="text-red-700 text-sm">
-                    Esta acción no se puede deshacer. Se eliminarán todas las palabras de esta categoría.
-                  </p>
-                </div>
-              )}
             </div>
             
             <div class="flex gap-3">
@@ -324,11 +302,7 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
               </button>
               <button
                 onClick={confirmDeleteCategory}
-                disabled={categoryToDelete.isDefault}
-                class={`flex-1 py-3 font-medium rounded-xl transition-colors ${
-                  categoryToDelete.isDefault 
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                    : 'bg-red-600 text-white hover:bg-red-700'
+                class={`flex-1 py-3 font-medium rounded-xl transition-colors bg-red-600 text-white hover:bg-red-700'
                 }`}
               >
                 Eliminar
@@ -431,8 +405,6 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
                                 </div>
                               </div>
                               
-                              {/* Botón de eliminar (solo para categorías personalizadas) */}
-                              {!isDefault && (
                                 <button
                                   onClick={() => handleDeleteCategory(category)}
                                   class="ml-2 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
@@ -442,7 +414,6 @@ export default function SetCategories({ onUpdateConfig }: SetCategoriesProps) {
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                   </svg>
                                 </button>
-                              )}
                             </div>
                             
                             {/* Mostrar algunos ejemplos */}
